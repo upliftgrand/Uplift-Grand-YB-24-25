@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Flipbook</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="flipbook-container">
+            <div id="flipbook">
+                <div class="page cover">
+    <h1>My Flipbook</h1>
+    <p>Click the corners to flip pages</p>
+    <!-- Add a cover image if desired -->
+    <img src="images/cover.jpg" alt="Cover image">
+</div>
+                
+<div class="page cover">
+    <h1>My Flipbook</h1>
+    <p>Click the corners to flip pages</p>
+    <!-- Add a cover image if desired -->
+    <img src="images/cover.jpg" alt="Cover image">
+</div>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 1</h2>
+        <p>This is the content for page 1.</p>
+        <img src="images/page1.jpg" alt="Sample image">
+    </div>
+</div>
+<!-- Repeat for other pages -->
+<div class="page">
+    <div class="page-content">
+        <h2>Page 5</h2>
+        <p>This is the content for page 5.</p>
+        <img src="images/page5.jpg" alt="Another sample image">
+    </div>
+</div>
+                <div class="page back-cover">
+                    <h2>Thank You!</h2>
+                    <p>End of the flipbook</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="prev-btn">Previous</button>
+            <span id="page-num">1</span> / <span id="total-pages"></span>
+            <button id="next-btn">Next</button>
+        </div>
+        
+        <div class="options">
+            <label for="zoom-slider">Zoom:</label>
+            <input type="range" id="zoom-slider" min="0.5" max="1.5" step="0.1" value="1">
+            
+            <button id="fullscreen-btn">Fullscreen</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
