@@ -14,6 +14,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .container {
@@ -21,6 +23,7 @@ body {
     width: 100%;
     margin: 0 auto;
     text-align: center;
+    overflow: hidden; /* Ensure no content spills out */
 }
 
 /* Flipbook Styles */
@@ -81,7 +84,7 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    padding: 20px;
+    padding: 15px; /* Reduced padding to allow more space for content */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -89,6 +92,7 @@ body {
     text-align: center;
     /* Handle content on both sides of a page */
     backface-visibility: hidden;
+    overflow: hidden; /* Prevent content overflow */
 }
 
 .page-content.front {
@@ -100,26 +104,40 @@ body {
 }
 
 .page-content h2 {
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced margin to make more space for content */
     color: #2c3e50;
 }
 
 .page-content p {
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
+/* FIXED: Image styling for proper scaling */
 .page-content img {
-    max-width: 80%;
-    margin: 15px 0;
+    max-width: 100%; /* Changed from 80% to 100% */
+    width: auto;
+    height: auto;
+    max-height: 70%; /* Add max-height to prevent images from becoming too large */
+    margin: 10px 0;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    object-fit: contain; /* Ensure image maintains aspect ratio */
+}
+
+/* For full-page images */
+.page-content .full-image {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    object-fit: cover; /* Cover the entire area */
 }
 
 .page-content ul {
     text-align: left;
     padding-left: 20px;
-    margin: 15px 0;
+    margin: 10px 0;
 }
 
 .page-content ul li {
@@ -282,6 +300,11 @@ button:disabled {
     .cover h1, .back-cover h2 {
         font-size: 2em;
     }
+
+    /* Improved responsive image handling */
+    .page-content img {
+        max-height: 60%; /* Smaller max-height on smaller screens */
+    }
 }
 
 @media (max-width: 480px) {
@@ -298,4 +321,20 @@ button:disabled {
         flex-direction: column;
         gap: 10px;
     }
+
+    /* Further adjustment for smallest screens */
+    .page-content {
+        padding: 10px;
+    }
+
+    .page-content img {
+        max-height: 50%; /* Even smaller max-height on smallest screens */
+    }
+}
+
+/* Added new class for landscape-oriented images */
+.page-content .landscape-image {
+    width: 100%;
+    max-height: none;
+    object-fit: contain;
 }
