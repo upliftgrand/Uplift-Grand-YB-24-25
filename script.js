@@ -4,13 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const pages = document.querySelectorAll('.page');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
-    const pageNum = document.getElementById('page-num');
-    const totalPages = document.getElementById('total-pages');
+    const totalPagesDisplay = document.getElementById('total-pages');
     const zoomSlider = document.getElementById('zoom-slider');
     const fullscreenBtn = document.getElementById('fullscreen-btn');
     
     // Check if all required elements exist
-    if (!flipbook || !prevBtn || !nextBtn || !pageNum || !totalPages || !zoomSlider || !fullscreenBtn) {
+    if (!flipbook || !prevBtn || !nextBtn || !totalPagesDisplay || !zoomSlider || !fullscreenBtn) {
         console.error('Required flipbook elements not found in the DOM');
         return; // Exit initialization if elements are missing
     }
@@ -24,13 +23,63 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    totalPages.textContent = Math.ceil(numPages / 2); // Correct total display
+    totalPagesDisplay.textContent = Math.ceil(numPages / 2); // Correct total display
+    
+    // Create and add page numbers inside each page
+    function createPageNumbers() {
+        pages.forEach((page, index) => {
+            // Create page number element
+            const pageNumberElement = document.createElement('div');
+            pageNumberElement.className = 'page-number';
+            pageNumberElement.textContent = index + 1;
+            
+            // Style the page number
+            pageNumberElement.style.position = 'absolute';
+            pageNumberElement.style.bottom = '10px';
+            pageNumberElement.style.width = '100%';
+            pageNumberElement.style.textAlign = 'center';
+            pageNumberElement.style.fontSize = '12px';
+            pageNumberElement.style.color = '#333';
+            pageNumberElement.style.background = 'rgba(255, 255, 255, 0.7)';
+            pageNumberElement.style.padding = '3px 0';
+            pageNumberElement.style.borderRadius = '3px';
+            pageNumberElement.style.zIndex = '10';
+            
+            // Add to the page
+            page.appendChild(pageNumberElement);
+        });
+    }
+    
+    // Style images to fill pages
+    function stylePageImages() {
+        pages.forEach(page => {
+            const images = page.querySelectorAll('img');
+            images.forEach(img => {
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.position = 'absolute';
+                img.style.top = '0';
+                img.style.left = '0';
+                img.style.margin = '0';
+                img.style.padding = '0';
+                // Set z-index lower than page number
+                img.style.zIndex = '1';
+            });
+        });
+    }
     
     // Initialize page positions
     function initializePages() {
         pages.forEach((page, index) => {
             // Set z-index in reverse order so first pages are on top
             page.style.zIndex = numPages - index;
+            
+            // Make sure each page is positioned relatively for absolute children
+            page.style.position = 'absolute';
+            page.style.width = '50%';
+            page.style.height = '100%';
+            page.style.overflow = 'hidden';
             
             // Position pages
             if (index % 2 === 0) {
@@ -80,9 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update page number display (show spread number)
-        pageNum.textContent = Math.ceil((currentPage + 2) / 2);
-        
         // Update button states
         prevBtn.disabled = currentPage <= 0;
         nextBtn.disabled = currentPage >= numPages - 2;
@@ -97,11 +143,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add turning animation before changing page
             pageToTurn.classList.add('turning-prev');
             
+            // Hide page number during animation
+            const pageNumber = pageToTurn.querySelector('.page-number');
+            if (pageNumber) pageNumber.style.opacity = '0';
+            
             // Wait for animation to complete before updating visibility
             setTimeout(() => {
                 currentPage -= 2;
                 updatePageVisibility();
                 pageToTurn.classList.remove('turning-prev');
+                
+                // Show page number again
+                if (pageNumber) pageNumber.style.opacity = '1';
             }, 500); // Match this to your CSS animation duration
         }
     }
@@ -115,11 +168,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add turning animation before changing page
             pageToTurn.classList.add('turning-next');
             
+            // Hide page number during animation
+            const pageNumber = pageToTurn.querySelector('.page-number');
+            if (pageNumber) pageNumber.style.opacity = '0';
+            
             // Wait for animation to complete before updating visibility
             setTimeout(() => {
                 currentPage += 2;
                 updatePageVisibility();
                 pageToTurn.classList.remove('turning-next');
+                
+                // Show page number again
+                if (pageNumber) pageNumber.style.opacity = '1';
             }, 500); // Match this to your CSS animation duration
         }
     }
@@ -144,6 +204,54 @@ document.addEventListener('DOMContentLoaded', function() {
         // Center the zoomed flipbook
         flipbook.style.transformOrigin = 'center center';
     });
+    
+    // Add CSS for page numbers and full-sized images
+    function addCustomStyles() {
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            .page {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                overflow: hidden;
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .page img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            
+            .page-number {
+                position: absolute;
+                bottom: 10px;
+                width: 100%;
+                text-align: center;
+                font-size: 12px;
+                color: #333;
+                background: rgba(255, 255, 255, 0.7);
+                padding: 3px 0;
+                border-radius: 3px;
+                transition: opacity 0.3s ease;
+                z-index: 10;
+            }
+            
+            .turning-next, .turning-prev {
+                transition: transform 0.5s ease;
+            }
+            
+            .turning-next {
+                transform: rotateY(-180deg);
+            }
+            
+            .turning-prev {
+                transform: rotateY(180deg);
+            }
+        `;
+        document.head.appendChild(styleElement);
+    }
     
     // Fullscreen functionality
     let isFullscreen = false;
@@ -252,7 +360,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the flipbook
     try {
-        initializePages();
+        addCustomStyles();    // Add required CSS
+        createPageNumbers();  // Add page numbers to pages
+        stylePageImages();    // Make images fill the entire page
+        initializePages();    // Initialize page positions and visibility
     } catch (err) {
         console.error('Error initializing flipbook:', err);
         // Display user-friendly error message
