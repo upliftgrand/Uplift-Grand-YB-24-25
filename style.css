@@ -60,21 +60,6 @@ body {
 .page:nth-child(even) {
     border-radius: 3px 0 0 3px;
     transform-origin: right center;
-    left: 50%; /* Position even pages on the right side */
-}
-
-.page:nth-child(odd) {
-    left: 0; /* Position odd pages on the left side */
-}
-
-/* Fixed page positioning */
-.page.flipped {
-    transform: rotateY(-180deg);
-    z-index: 2;
-}
-
-.page.flipped:nth-child(even) {
-    transform: rotateY(180deg);
 }
 
 .page-content {
@@ -87,16 +72,6 @@ body {
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    /* Handle content on both sides of a page */
-    backface-visibility: hidden;
-}
-
-.page-content.front {
-    transform: rotateY(0deg);
-}
-
-.page-content.back {
-    transform: rotateY(180deg);
 }
 
 .page-content h2 {
@@ -149,40 +124,12 @@ body {
 
 /* Page Turning Effect */
 .turning {
-    animation: turnPage 0.5s ease-in-out forwards;
-}
-
-.turning-back {
-    animation: turnPageBack 0.5s ease-in-out forwards;
+    animation: turnPage 0.5s ease-in-out;
 }
 
 @keyframes turnPage {
     0% { transform: rotateY(0deg); }
     100% { transform: rotateY(-180deg); }
-}
-
-@keyframes turnPageBack {
-    0% { transform: rotateY(-180deg); }
-    100% { transform: rotateY(0deg); }
-}
-
-/* For even pages */
-.page:nth-child(even).turning {
-    animation: turnPageEven 0.5s ease-in-out forwards;
-}
-
-.page:nth-child(even).turning-back {
-    animation: turnPageEvenBack 0.5s ease-in-out forwards;
-}
-
-@keyframes turnPageEven {
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(180deg); }
-}
-
-@keyframes turnPageEvenBack {
-    0% { transform: rotateY(180deg); }
-    100% { transform: rotateY(0deg); }
 }
 
 /* Corner Indicators */
@@ -199,23 +146,8 @@ body {
     z-index: 10;
 }
 
-.page:nth-child(odd):not(.cover):not(.back-cover)::before {
-    right: 0; /* For left pages, keep corner on right */
-}
-
-.page:nth-child(even):not(.cover):not(.back-cover)::before {
-    right: auto;
-    left: 0;
-    border-width: 0 30px 30px 0;
-    border-color: transparent #ddd transparent transparent;
-}
-
 .page:not(.cover):not(.back-cover):hover::before {
     border-color: transparent transparent #3498db transparent;
-}
-
-.page:nth-child(even):not(.cover):not(.back-cover):hover::before {
-    border-color: transparent #3498db transparent transparent;
 }
 
 /* Controls */
