@@ -1,357 +1,709 @@
+index code for the year
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uplift Grand Yearbook 2024-2025</title>
+    <title>Interactive Flipbook</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <img src="https://upliftgrand.org/wp-content/uploads/2022/05/Uplift-Grand-Lion-Primary-Logo_HORIZONTAL_COLOR@2x.png" alt="Uplift Grand Logo">
-            </div>
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="active">Home</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
-                    <li><a href="#staff">Staff</a></li>
-                    <li><a href="#students">Students</a></li>
-                    <li><a href="#events">Events</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div class="container">
+        <div class="flipbook-container">
+            <div id="flipbook">
+                <div class="page cover">
+                    <h1>My Flipbook</h1>
+                    <p>Click the corners to flip pages</p>
+                    <!-- Add a cover image if desired -->
+                    <img src="images/cover.jpg" alt="Cover image">
+                </div>
+                 <div class="page">
+                    <div class="page-content">
+                        <h2>Page 1</h2>
+                        <img src="images/page1.jpg" alt= loading="lazy">
+                    </div>
+                </div>
+                <div class="page">
+                    <div class="page-content">
+                        <h2>Page 2</h2>
+                        <img src="images/page2.jpg" alt= loading="lazy">
+                    </div>
+                </div>                     
+                                <div class="page">
+                    <div class="page-content">
+                        <h2>Page 3</h2>
+                        <p>This is the content for page 3.</p>
+                        <ul>
+                            <li>List item 1</li>
+                            <li>List item 2</li>
+                            <li>List item 3</li>
+                        </ul>
+                        
+<div class="page">
+    <div class="page-content">
+        <h2>Page 4</h2>
+        <img src="images/page4.jpg" alt="Another sample image">
+    </div>
+</div>
+                
+<!-- Repeat for other pages -->
+<div class="page">
+    <div class="page-content">
+        <h2>Page 5</h2>
+        <img src="images/page5.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Uplift Grand Preparatory</h1>
-            <h2>2024-2025 Yearbook</h2>
-            <p>Celebrating our scholars, staff, and community</p>
-            <a href="#gallery" class="btn">View Our Memories</a>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 6</h2>
+        <img src="images/page6.jpg" alt="Another sample image">
+    </div>
+</div>
+             <div class="page">
+    <div class="page-content">
+        <h2>Page 7</h2>
+        <img src="images/page7.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2 class="section-title">About Our School</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Uplift Grand Preparatory is dedicated to providing a comprehensive, high-quality education that prepares our scholars for college and beyond. Our mission is to create and sustain public schools of excellence that empower students to reach their highest potential.</p>
-                    <p>This yearbook celebrates the achievements, growth, and memories created during the 2024-2025 academic year. From classroom accomplishments to extracurricular activities, our school community has thrived through dedication and collaboration.</p>
-                </div>
-                <div class="about-image">
-                    <img src="https://upliftgrand.org/wp-content/uploads/2022/07/Uplift-Grand-Scholars.jpg" alt="Uplift Grand Students">
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 8</h2>
+        <img src="images/page8.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="gallery" class="gallery-section">
-        <div class="container">
-            <h2 class="section-title">Gallery</h2>
-            <div class="gallery-filter">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="classroom">Classroom</button>
-                <button class="filter-btn" data-filter="events">Events</button>
-                <button class="filter-btn" data-filter="sports">Sports</button>
-            </div>
-            <div class="gallery-container">
-                <div class="gallery-item classroom">
-                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1622&q=80" alt="Classroom Activity">
-                </div>
-                <div class="gallery-item events">
-                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1769&q=80" alt="School Event">
-                </div>
-                <div class="gallery-item sports">
-                    <img src="https://images.unsplash.com/photo-1526403646408-57b94dc15399?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Sports Activity">
-                </div>
-                <div class="gallery-item classroom">
-                    <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Learning Session">
-                </div>
-                <div class="gallery-item events">
-                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="School Celebration">
-                </div>
-                <div class="gallery-item sports">
-                    <img src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Team Sports">
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 9</h2>
+        <img src="images/page9.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="staff" class="staff-section">
-        <div class="container">
-            <h2 class="section-title">Our Staff</h2>
-            <div class="staff-container">
-                <div class="staff-card">
-                    <div class="staff-image">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80" alt="Staff Member">
-                    </div>
-                    <div class="staff-info">
-                        <h3>Sarah Johnson</h3>
-                        <p>Principal</p>
-                        <div class="staff-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="staff-card">
-                    <div class="staff-image">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80" alt="Staff Member">
-                    </div>
-                    <div class="staff-info">
-                        <h3>Michael Rodriguez</h3>
-                        <p>Vice Principal</p>
-                        <div class="staff-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="staff-card">
-                    <div class="staff-image">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" alt="Staff Member">
-                    </div>
-                    <div class="staff-info">
-                        <h3>Jennifer Lewis</h3>
-                        <p>Math Department Head</p>
-                        <div class="staff-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="staff-card">
-                    <div class="staff-image">
-                        <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80" alt="Staff Member">
-                    </div>
-                    <div class="staff-info">
-                        <h3>David Chen</h3>
-                        <p>Science Teacher</p>
-                        <div class="staff-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 10</h2>
+        <img src="images/page10.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="students" class="students-section">
-        <div class="container">
-            <h2 class="section-title">Student Highlights</h2>
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="elementary">Elementary</button>
-                <button class="tab-btn" data-tab="middle">Middle School</button>
-                <button class="tab-btn" data-tab="high">High School</button>
-            </div>
-            <div class="tab-content active" id="elementary">
-                <div class="student-grid">
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Elementary Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"I love art class because we get to be creative!"</p>
-                            <span>- Jamie, 4th Grade</span>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1636538191394-6c6a8bf61bec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Elementary Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"Math is my favorite subject. I want to be an engineer!"</p>
-                            <span>- Tyler, 5th Grade</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-content" id="middle">
-                <div class="student-grid">
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Middle School Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"Being part of the debate team has helped me find my voice."</p>
-                            <span>- Alex, 7th Grade</span>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1531946822603-a76cc3fde748?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Middle School Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"Science experiments are the best part of my day at school."</p>
-                            <span>- Maya, 8th Grade</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-content" id="high">
-                <div class="student-grid">
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="High School Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"Joining the robotics club helped me decide on computer engineering as my future career."</p>
-                            <span>- Jordan, 11th Grade</span>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-image">
-                            <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="High School Student">
-                        </div>
-                        <div class="student-quote">
-                            <p>"The Advanced Placement classes have prepared me well for college next year."</p>
-                            <span>- Emma, 12th Grade</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 11</h2>
+        <img src="images/page11.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="events" class="events-section">
-        <div class="container">
-            <h2 class="section-title">School Events</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">September 2024</div>
-                    <div class="timeline-content">
-                        <h3>Back to School Night</h3>
-                        <p>Families and teachers gathered to meet and set the tone for the new academic year.</p>
-                        <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1769&q=80" alt="Back to School Night">
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">December 2024</div>
-                    <div class="timeline-content">
-                        <h3>Winter Concert</h3>
-                        <p>Our talented music students showcased their skills with an unforgettable performance.</p>
-                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Winter Concert">
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">March 2025</div>
-                    <div class="timeline-content">
-                        <h3>Science Fair</h3>
-                        <p>Students presented innovative projects showcasing their scientific inquiry and creativity.</p>
-                        <img src="https://images.unsplash.com/photo-1581059729226-c2f7834ab138?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Science Fair">
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">May 2025</div>
-                    <div class="timeline-content">
-                        <h3>Graduation Ceremony</h3>
-                        <p>Celebrating our seniors as they embark on their next chapter.</p>
-                        <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Graduation">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 12</h2>
+        <img src="images/page12.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2 class="section-title">Contact Us</h2>
-            <div class="contact-container">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>1305 N. Center Street, Grand Prairie, TX 75050</p>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <p>(972) 854-1700</p>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <p>info@upliftgrand.org</p>
-                    </div>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/UpliftGrandPreparatory" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://twitter.com/UpliftGrand" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/upliftgrand/" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="contact-form">
-                    <form id="yearbook-form">
-                        <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <select id="subject" name="subject" required>
-                                <option value="" disabled selected>Select Subject</option>
-                                <option value="yearbook-inquiry">Yearbook Inquiry</option>
-                                <option value="photo-submission">Photo Submission</option>
-                                <option value="general-question">General Question</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
+    <div class="page-content">
+        <h2>Page 13</h2>
+        <img src="images/page13.jpg" alt="Another sample image">
+    </div>
+</div>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="https://upliftgrand.org/wp-content/uploads/2022/05/Uplift-Grand-Lion-Primary-Logo_HORIZONTAL_COLOR@2x.png" alt="Uplift Grand Logo">
+<div class="page">
+    <div class="page-content">
+        <h2>Page 14</h2>
+        <img src="images/page14.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 15</h2>
+        <img src="images/page15.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 16</h2>
+        <img src="images/page16.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 17</h2>
+        <img src="images/page17.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 18</h2>
+        <img src="images/page18.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 19</h2>
+        <img src="images/page19.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 20</h2>
+        <img src="images/page20.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 21</h2>
+        <img src="images/page21.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 22</h2>
+        <img src="images/page22.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 23</h2>
+        <img src="images/page23.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 24</h2>
+        <img src="images/page24.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 25</h2>
+        <img src="images/page25.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 26</h2>
+        <img src="images/page26.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 27</h2>
+        <img src="images/page27.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 28</h2>
+        <img src="images/page28.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 29</h2>
+        <img src="images/page29.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 30</h2>
+        <img src="images/page30.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 31</h2>
+        <img src="images/page31.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 32</h2>
+        <img src="images/page32.jpg" alt="Another sample image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 33</h2>
+        <img src="images/page33.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 34</h2>
+        <img src="images/page34.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 35</h2>
+        <img src="images/page35.jpg" alt="Another sample image">
+    </div>
+</div>            
+            
+<div class="page">
+    <div class="page-content">
+        <h2>Page 36</h2>
+        <img src="images/page36.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 37</h2>
+        <img src="images/page37.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 38</h2>
+        <img src="images/page38.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 39</h2>
+        <img src="images/page39.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 40</h2>
+        <img src="images/page40.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 41</h2>
+        <img src="images/page41.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 42</h2>
+        <img src="images/page42.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 43</h2>
+        <img src="images/page43.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 44</h2>
+        <img src="images/page44.jpg" alt="Another sample image">
+    </div>
+</div>            
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 44</h2>
+        <img src="images/page44.jpg" alt="Page 44 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 45</h2>
+        <img src="images/page45.jpg" alt="Page 45 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 46</h2>
+        <img src="images/page46.jpg" alt="Page 46 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 47</h2>
+        <img src="images/page47.jpg" alt="Page 47 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 48</h2>
+        <img src="images/page48.jpg" alt="Page 48 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 49</h2>
+        <img src="images/page49.jpg" alt="Page 49 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 50</h2>
+        <img src="images/page50.jpg" alt="Page 50 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 51</h2>
+        <img src="images/page51.jpg" alt="Page 51 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 52</h2>
+        <img src="images/page52.jpg" alt="Page 52 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 53</h2>
+        <img src="images/page53.jpg" alt="Page 53 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 54</h2>
+        <img src="images/page54.jpg" alt="Page 54 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 55</h2>
+        <img src="images/page55.jpg" alt="Page 55 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 56</h2>
+        <img src="images/page56.jpg" alt="Page 56 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 57</h2>
+        <img src="images/page57.jpg" alt="Page 57 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 58</h2>
+        <img src="images/page58.jpg" alt="Page 58 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 59</h2>
+        <img src="images/page59.jpg" alt="Page 59 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 60</h2>
+        <img src="images/page60.jpg" alt="Page 60 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 61</h2>
+        <img src="images/page61.jpg" alt="Page 61 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 62</h2>
+        <img src="images/page62.jpg" alt="Page 62 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 63</h2>
+        <img src="images/page63.jpg" alt="Page 63 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 64</h2>
+        <img src="images/page64.jpg" alt="Page 64 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 65</h2>
+        <img src="images/page65.jpg" alt="Page 65 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 66</h2>
+        <img src="images/page66.jpg" alt="Page 66 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 67</h2>
+        <img src="images/page67.jpg" alt="Page 67 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 68</h2>
+        <img src="images/page68.jpg" alt="Page 68 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 69</h2>
+        <img src="images/page69.jpg" alt="Page 69 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 70</h2>
+        <img src="images/page70.jpg" alt="Page 70 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 71</h2>
+        <img src="images/page71.jpg" alt="Page 71 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 72</h2>
+        <img src="images/page72.jpg" alt="Page 72 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 73</h2>
+        <img src="images/page73.jpg" alt="Page 73 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 74</h2>
+        <img src="images/page74.jpg" alt="Page 74 image">
+    </div>
+</div>
+                
+<div class
+<div class="page">
+    <div class="page-content">
+        <h2>Page 75</h2>
+        <img src="images/page75.jpg" alt="Page 75 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 76</h2>
+        <img src="images/page76.jpg" alt="Page 76 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 77</h2>
+        <img src="images/page77.jpg" alt="Page 77 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 78</h2>
+        <img src="images/page78.jpg" alt="Page 78 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 79</h2>
+        <img src="images/page79.jpg" alt="Page 79 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 80</h2>
+        <img src="images/page80.jpg" alt="Page 80 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 81</h2>
+        <img src="images/page81.jpg" alt="Page 81 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 82</h2>
+        <img src="images/page82.jpg" alt="Page 82 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 83</h2>
+        <img src="images/page83.jpg" alt="Page 83 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 84</h2>
+        <img src="images/page84.jpg" alt="Page 84 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 85</h2>
+        <img src="images/page85.jpg" alt="Page 85 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 86</h2>
+        <img src="images/page86.jpg" alt="Page 86 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 87</h2>
+        <img src="images/page87.jpg" alt="Page 87 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 88</h2>
+        <img src="images/page88.jpg" alt="Page 88 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 89</h2>
+        <img src="images/page89.jpg" alt="Page 89 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 90</h2>
+        <img src="images/page90.jpg" alt="Page 90 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 91</h2>
+        <img src="images/page91.jpg" alt="Page 91 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 92</h2>
+        <img src="images/page92.jpg" alt="Page 92 image">
+    </div>
+</div>
+                
+<div class="page">
+    <div class="page-content">
+        <h2>Page 93</h2>
+        <img src="images/page93.jpg" alt="Page 93 image">
+    </div>
+</div>
+
+<div class="page">
+    <div class="page-content">
+        <h2>Page 94</h2>
+        <img src="images/page94.jpg" alt="Page 93 image">
+    </div>
+</div>
+                
+                <div class="page back-cover">
+                    <h2>Thank You!</h2>
+                    <p>End of the flipbook</p>
                 </div>
-                <div class="footer-links">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
-                        <li><a href="#staff">Staff</a></li>
-                        <li><a href="#students">Students</a></li>
-                        <li><a href="#events">Events</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="newsletter">
-                    <h3>Subscribe to Updates</h3>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Your Email Address" required>
-                        <button type="submit" class="btn">Subscribe</button>
-                    </form>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Uplift Grand Preparatory. All Rights Reserved.</p>
             </div>
         </div>
-    </footer>
+        
+        <div class="controls">
+            <button id="prev-btn">Previous</button>
+            <span id="page-num">1</span> / <span id="total-pages"></span>
+            <button id="next-btn">Next</button>
+        </div>
+        
+        <div class="options">
+            <label for="zoom-slider">Zoom:</label>
+            <input type="range" id="zoom-slider" min="0.5" max="1.5" step="0.1" value="1">
+            
+            <button id="fullscreen-btn">Fullscreen</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
