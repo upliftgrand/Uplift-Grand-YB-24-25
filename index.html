@@ -1,3 +1,23 @@
+
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <title>Uplift Grand YB 24-25</title> <style> body { margin: 0; padding: 0; font-family: Arial, sans-serif; backgroun
+
+pasted
+
+correct this code to fix the image load issue
+
+I'll help you fix the image loading issue in your flipbook application. Let me analyze the code and make the necessary corrections.
+
+The main issue appears to be with how the images are loaded and displayed. There are a few areas that need to be addressed to make the image loading more reliable.
+
+Here's a corrected version of your code:
+
+
+Fixed Flipbook Code
+Interactive artifact 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,30 +190,81 @@
       const totalPages = 94;
       let currentPage = 1;
       const pages = [];
+      let loadedImages = 0;
 
+      // Placeholder image for failed loads
+      const placeholderSVG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="30" text-anchor="middle" fill="%23999">Image not found</text></svg>';
+      
       function getImagePath(pageNum) {
-        return `./page${pageNum}.jpg`;
+        // Ensure page number has leading zeros if needed (e.g., page001.jpg)
+        const paddedNum = String(pageNum).padStart(3, '0');
+        return `./page${paddedNum}.jpg`;
       }
 
       function preloadImages() {
-        let loaded = 0;
-
-        function updateProgress() {
-          loaded++;
-          loading.textContent = `Loading pages... ${Math.round((loaded / totalPages) * 100)}%`;
-
-          if (loaded >= totalPages) {
+        loading.textContent = 'Loading pages... 0%';
+        
+        // Create an array to track loaded status
+        const imageStatus = new Array(totalPages).fill(false);
+        
+        function checkAllLoaded() {
+          loadedImages++;
+          const percent = Math.round((loadedImages / totalPages) * 100);
+          loading.textContent = `Loading pages... ${percent}%`;
+          
+          // Initialize flipbook once all images have been attempted to load
+          // or at least 10 images have loaded (so the user can start browsing)
+          if (loadedImages >= totalPages || loadedImages >= 10) {
             initializeFlipbook();
           }
         }
 
+        // Try different file naming patterns if needed
+        const possibleExtensions = ['jpg', 'jpeg', 'png'];
+        const possiblePrefixes = ['page', 'p', ''];
+        
         for (let i = 1; i <= totalPages; i++) {
+          // Try to load with standard path first
+          tryLoadImage(i, 0, 0);
+        }
+        
+        function tryLoadImage(pageNum, extIndex, prefixIndex) {
+          if (extIndex >= possibleExtensions.length) {
+            if (prefixIndex >= possiblePrefixes.length - 1) {
+              // All patterns tried, mark as loaded but failed
+              checkAllLoaded();
+              return;
+            }
+            // Try next prefix pattern
+            tryLoadImage(pageNum, 0, prefixIndex + 1);
+            return;
+          }
+          
+          const ext = possibleExtensions[extIndex];
+          const prefix = possiblePrefixes[prefixIndex];
+          const paddedNum = String(pageNum).padStart(3, '0');
+          const path = `./${prefix}${paddedNum}.${ext}`;
+          
           const img = new Image();
-          img.onload = updateProgress;
-          img.onerror = updateProgress;
-          img.src = getImagePath(i);
+          
+          img.onload = function() {
+            if (!imageStatus[pageNum - 1]) {
+              imageStatus[pageNum - 1] = true;
+              // Store successful path pattern
+              window.successfulPattern = { prefix, ext };
+              checkAllLoaded();
+            }
+          };
+          
+          img.onerror = function() {
+            // Try next extension
+            tryLoadImage(pageNum, extIndex + 1, prefixIndex);
+          };
+          
+          img.src = path;
         }
 
+        // Fallback if images are taking too long
         setTimeout(() => {
           if (flipbook.style.display === 'none') {
             initializeFlipbook();
@@ -202,8 +273,13 @@
       }
 
       function initializeFlipbook() {
+        if (flipbook.children.length > 0) return; // Prevent duplicate initialization
+        
         loading.style.display = 'none';
         flipbook.style.display = 'block';
+
+        // Use detected pattern if available
+        const pattern = window.successfulPattern || { prefix: 'page', ext: 'jpg' };
 
         for (let i = 1; i <= totalPages; i++) {
           const page = document.createElement('div');
@@ -212,12 +288,20 @@
           page.style.zIndex = totalPages - i;
 
           const img = document.createElement('img');
-          img.src = getImagePath(i);
+          const paddedNum = String(i).padStart(3, '0');
+          img.src = `./${pattern.prefix}${paddedNum}.${pattern.ext}`;
           img.alt = `Page ${i}`;
           img.draggable = false;
+          img.loading = "lazy"; // Use browser's lazy loading
 
-          img.onerror = function () {
-            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="30" text-anchor="middle" fill="%23999">Image not found</text></svg>';
+          img.onerror = function() {
+            // Try unpaddedNum as fallback
+            const unpaddedPath = `./${pattern.prefix}${i}.${pattern.ext}`;
+            img.src = unpaddedPath;
+            
+            img.onerror = function() {
+              this.src = placeholderSVG;
+            };
           };
 
           const pageNumber = document.createElement('div');
@@ -231,12 +315,15 @@
 
           const thumb = document.createElement('img');
           thumb.className = 'thumbnail';
-          thumb.src = getImagePath(i);
+          thumb.src = img.src; // Use same source as main image
           thumb.dataset.page = i;
           thumb.alt = `Thumbnail ${i}`;
-          thumb.onerror = function () {
-            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" viewBox="0 0 60 80"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="12" text-anchor="middle" fill="%23999">' + i + '</text></svg>';
+          thumb.loading = "lazy";
+          
+          thumb.onerror = function() {
+            this.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" viewBox="0 0 60 80"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="12" text-anchor="middle" fill="%23999">${i}</text></svg>`;
           };
+          
           thumb.addEventListener('click', () => goToPage(i));
           thumbnailsContainer.appendChild(thumb);
         }
@@ -247,41 +334,21 @@
       function goToPage(num) {
         if (num < 1 || num > totalPages) return;
 
-        pages[currentPage - 1].style.display = 'none';
-        pages[num - 1].style.display = 'block';
+        // Add visual feedback for page turning
+        if (pages[currentPage - 1]) {
+          pages[currentPage - 1].style.display = 'none';
+        }
+        
+        if (pages[num - 1]) {
+          pages[num - 1].style.display = 'block';
+          
+          // Preload adjacent pages for smoother browsing
+          preloadAdjacentPages(num);
+        }
+        
         currentPage = num;
         updateUI();
       }
-
-      function updateUI() {
-        pageDisplay.textContent = `Page ${currentPage} of ${totalPages}`;
-        document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
-          thumb.classList.toggle('active', index + 1 === currentPage);
-        });
-        const activeThumb = document.querySelector('.thumbnail.active');
-        if (activeThumb) {
-          activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-        }
-      }
-
-      prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-      nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
-        if (e.key === 'ArrowRight') goToPage(currentPage + 1);
-      });
-
-      let startX = 0;
-      document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
-      document.addEventListener('touchend', e => {
-        const endX = e.changedTouches[0].clientX;
-        if (endX < startX - 50) goToPage(currentPage + 1);
-        if (endX > startX + 50) goToPage(currentPage - 1);
-      });
-
-      preloadImages();
-    });
-  </script>
-</body>
-</html>
+      
+      function preloadAdjacentPages(currentNum) {
+        // Preloa
