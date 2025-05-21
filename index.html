@@ -1,3 +1,20 @@
+# Interactive Flipbook Implementation Guide
+
+This guide provides instructions on how to set up your interactive flipbook correctly, ensuring images display properly without being cut off.
+
+## File Structure
+
+Create the following files in your project directory:
+
+1. `index.html` - The main HTML file
+2. `style.css` - CSS styles for the flipbook
+3. `script.js` - JavaScript functionality
+
+## Step 1: HTML Implementation
+
+Save the following code as `index.html`:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,3 +87,279 @@
     <script src="script.js"></script>
 </body>
 </html>
+```
+
+## Step 2: CSS Implementation
+
+Save the following code as `style.css`:
+
+```css
+/* Main styles for the flipbook */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 100%;
+}
+
+.flipbook-container {
+    width: 100%;
+    max-width: 1000px;
+    height: 70vh;
+    min-height: 500px;
+    position: relative;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+#flipbook {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    perspective: 1500px;
+}
+
+.page {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    transform-origin: left center;
+    transition: transform 0.5s;
+    overflow: hidden;
+    display: none;
+}
+
+.page:nth-child(odd) {
+    transform-origin: right center;
+    right: 0;
+}
+
+.page:nth-child(even) {
+    left: 0;
+}
+
+.page.active {
+    display: block;
+}
+
+.page.flipped {
+    transform: rotateY(-180deg);
+}
+
+.page-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page img {
+    max-width: 100%;
+    max-height: 80%;
+    object-fit: contain;
+    margin: 10px 0;
+}
+
+.cover, .back-cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #34495e;
+    color: white;
+}
+
+.cover h1, .back-cover h2 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+ul {
+    list-style-position: inside;
+    margin-bottom: 15px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+/* Controls and options */
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#zoom-slider {
+    margin: 0 15px;
+}
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .flipbook-container {
+        height: 50vh;
+        min-height: 400px;
+    }
+    
+    .page {
+        width: 100%;
+    }
+    
+    .options {
+        flex-direction: column;
+    }
+    
+    #zoom-slider {
+        margin: 10px 0;
+    }
+}
+```
+
+## Step 3: JavaScript Implementation
+
+Save the following code as `script.js`:
+
+```javascript
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const flipbook = document.getElementById('flipbook');
+    const pages = document.querySelectorAll('.page');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageNum = document.getElementById('page-num');
+    const totalPages = document.getElementById('total-pages');
+    const zoomSlider = document.getElementById('zoom-slider');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const container = document.querySelector('.container');
+    
+    // State
+    let currentPage = 0;
+    let scale = 1;
+    
+    // Initialize
+    function init() {
+        updatePageDisplay();
+        totalPages.textContent = pages.length;
+        
+        // Set up event listeners
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+        zoomSlider.addEventListener('input', handleZoom);
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        // Add touch/mouse events for flipping
+        pages.forEach((page) => {
+            page.addEventListener('click', function(e) {
+                const rect = page.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                
+                // If clicked on right side, go next, if left side, go prev
+                if (x > rect.width / 2) {
+                    nextPage();
+                } else {
+                    prevPage();
+                }
+            });
+        });
+        
+        // Handle keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
+        
+        // Preload images for better performance
+        preloadImages();
+    }
+    
+    // Update the page display
+    function updatePageDisplay() {
+        pages.forEach((page) => {
+            page.classList.remove('active');
+            page.classList.remove('flipped');
+        });
+        
+        pages[currentPage].classList.add('active');
+        
+        // Display page number
+        pageNum.textContent = currentPage + 1;
+        
+        // Enable/disable buttons
+        prevBtn.disabled = currentPage === 0;
+        next
