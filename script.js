@@ -1,312 +1,315 @@
+// Flipbook initialization and image handling
 document.addEventListener('DOMContentLoaded', function() {
-    const flipbook = document.getElementById('flipbook');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
-    const pageDisplay = document.getElementById('page-display');
-    const thumbnailsContainer = document.getElementById('thumbnails');
-    const loading = document.getElementById('loading');
+    // Variables and configuration
+    const totalPages = 94; // Total number of pages (page1.jpg through page94.jpg)
+    const imageBasePath = './'; // Path to your images folder - update this if needed
+    const imagePrefix = 'page';
+    const imageExtension = '.jpg';
     
-    const totalPages = 94;
-    let currentPage = 1;
-    let pagesLoaded = 0;
-    let pages = [];
+    // Initialize the flipbook
+    initFlipbook();
     
-    // Initialize flipbook immediately and load images progressively
-    function initializeFlipbook() {
-        loading.style.display = 'none';
-        flipbook.style.display = 'block';
+    // Main flipbook initialization function
+    function initFlipbook() {
+        const flipbook = document.getElementById('flipbook');
+        if (!flipbook) {
+            console.error('Flipbook container not found!');
+            return;
+        }
+        
+        // Clear existing content
+        flipbook.innerHTML = '';
+        
+        // Create loading message
+        const loadingMessage = document.createElement('div');
+        loadingMessage.className = 'loading';
+        loadingMessage.textContent = 'Loading flipbook...';
+        flipbook.appendChild(loadingMessage);
         
         // Create pages
+        createPages();
+        
+        // Initialize thumbnails if the container exists
+        createThumbnails();
+        
+        // Setup navigation buttons
+        setupNavigation();
+        
+        // Remove loading message when ready
+        setTimeout(() => {
+            const loading = document.querySelector('.loading');
+            if (loading) loading.remove();
+        }, 1500);
+    }
+    
+    // Create all pages for the flipbook
+    function createPages() {
+        const flipbook = document.getElementById('flipbook');
+        
         for (let i = 1; i <= totalPages; i++) {
             const page = document.createElement('div');
             page.className = 'page';
-            page.style.display = i === 1 ? 'block' : 'none';
-            page.style.zIndex = totalPages - i;
+            page.setAttribute('data-page', i);
+            
+            // Only show first page initially, hide others
+            if (i > 1) {
+                page.style.display = 'none';
+            }
             
             const img = document.createElement('img');
-            img.dataset.src = `page${i}.jpg`; // Use data-src initially
-            img.alt = `Page ${i}`;
-            img.draggable = false;
+            const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
+            img.setAttribute('data-src', imgPath); // Use data-src for lazy loading
             
-            // Add loading placeholder
-            const placeholder = document.createElement('div');
-            placeholder.className = 'loading-placeholder';
-            placeholder.textContent = `Loading page ${i}...`;
-            page.appendChild(placeholder);
+            // For the first few pages, load immediately
+            if (i <= 3) {
+                img.src = imgPath;
+            }
             
+            // Add page number
             const pageNumber = document.createElement('div');
             pageNumber.className = 'page-number';
             pageNumber.textContent = i;
             
+            // Add to page
             page.appendChild(img);
             page.appendChild(pageNumber);
             flipbook.appendChild(page);
-            pages.push(page);
             
-            // Create thumbnail with placeholder
-            const thumbnailContainer = document.createElement('div');
-            thumbnailContainer.className = 'thumbnail-container';
-            
-            const thumbnail = document.createElement('img');
-            thumbnail.className = 'thumbnail';
-            thumbnail.dataset.src = `page${i}.jpg`; // Use data-src initially
-            thumbnail.alt = `Thumbnail ${i}`;
-            thumbnail.dataset.page = i;
-            
-            // Add placeholder for thumbnail
-            const thumbPlaceholder = document.createElement('div');
-            thumbPlaceholder.className = 'thumbnail-placeholder';
-            thumbPlaceholder.textContent = i;
-            thumbnailContainer.appendChild(thumbPlaceholder);
-            
-            thumbnailContainer.appendChild(thumbnail);
-            thumbnailContainer.addEventListener('click', function() {
-                goToPage(parseInt(thumbnail.dataset.page));
-            });
-            
-            thumbnailsContainer.appendChild(thumbnailContainer);
-        }
-        
-        // Set first thumbnail as active
-        updateActiveThumbnail();
-        
-        // Start loading images progressively
-        loadImagesProgressively();
-        
-        // Add click event to pages
-        pages.forEach(page => {
+            // Add click event for navigation
             page.addEventListener('click', function(e) {
-                // Only trigger page turn if clicking on the right side
-                const pageRect = page.getBoundingClientRect();
-                const clickX = e.clientX - pageRect.left;
+                // If click is on the right side, go to next page
+                const clickX = e.clientX - page.getBoundingClientRect().left;
+                const pageWidth = page.offsetWidth;
                 
-                if (clickX > pageRect.width / 2) {
-                    if (currentPage < totalPages) {
-                        goToPage(currentPage + 1);
-                    }
+                if (clickX > pageWidth / 2) {
+                    nextPage();
                 } else {
-                    if (currentPage > 1) {
-                        goToPage(currentPage - 1);
-                    }
+                    prevPage();
                 }
             });
+            
+            // Add image loading handlers
+            setupImageLoading(img);
+        }
+    }
+    
+    // Create thumbnails
+    function createThumbnails() {
+        const thumbnailsContainer = document.querySelector('.thumbnails');
+        if (!thumbnailsContainer) return;
+        
+        thumbnailsContainer.innerHTML = '';
+        
+        for (let i = 1; i <= totalPages; i++) {
+            const thumb = document.createElement('img');
+            thumb.className = 'thumbnail';
+            thumb.src = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
+            thumb.setAttribute('data-page', i);
+            thumb.alt = `Page ${i} thumbnail`;
+            
+            // Set first thumbnail as active
+            if (i === 1) {
+                thumb.classList.add('active');
+            }
+            
+            // Add click event to navigate to page
+            thumb.addEventListener('click', function() {
+                goToPage(i);
+            });
+            
+            thumbnailsContainer.appendChild(thumb);
+            
+            // Add loading handlers
+            setupImageLoading(thumb);
+        }
+    }
+    
+    // Setup navigation buttons
+    function setupNavigation() {
+        const prevButton = document.querySelector('.controls button:first-child');
+        const nextButton = document.querySelector('.controls button:last-child');
+        
+        if (prevButton) {
+            prevButton.addEventListener('click', prevPage);
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', nextPage);
+        }
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
+    }
+    
+    // Image loading and error handling function
+    function setupImageLoading(img) {
+        // Handle lazy loading
+        if (img.getAttribute('data-src') && !img.src) {
+            // Create observer for lazy loading
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        img.src = img.getAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            
+            observer.observe(img);
+        }
+        
+        // Add loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.textContent = 'Loading...';
+        if (img.parentNode) {
+            img.parentNode.appendChild(loadingIndicator);
+        }
+        
+        // Handle successful load
+        img.addEventListener('load', function() {
+            // Remove loading indicator if it exists
+            const indicator = img.parentNode?.querySelector('.loading-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
         });
         
-        // Set initial page display
-        pageDisplay.textContent = `Page ${currentPage} of ${totalPages}`;
-    }
-    
-    // Load images progressively, prioritizing current and adjacent pages
-    function loadImagesProgressively() {
-        // First, load the first few pages and their thumbnails
-        const priorityPages = 5;
-        for (let i = 1; i <= Math.min(priorityPages, totalPages); i++) {
-            loadPageImage(i);
-            loadThumbnailImage(i);
-        }
-        
-        // Then load the rest with a small delay between each
-        let nextPageToLoad = priorityPages + 1;
-        
-        function loadNextBatch() {
-            if (nextPageToLoad <= totalPages) {
-                const batchSize = 3; // Load 3 pages at a time
-                const endPage = Math.min(nextPageToLoad + batchSize - 1, totalPages);
-                
-                for (let i = nextPageToLoad; i <= endPage; i++) {
-                    loadPageImage(i);
-                    loadThumbnailImage(i);
-                }
-                
-                nextPageToLoad = endPage + 1;
-                setTimeout(loadNextBatch, 100); // Small delay to prevent blocking UI
+        // Handle loading errors
+        img.addEventListener('error', function() {
+            // Remove loading indicator if it exists
+            const indicator = img.parentNode?.querySelector('.loading-indicator');
+            if (indicator) {
+                indicator.remove();
             }
-        }
-        
-        setTimeout(loadNextBatch, 300); // Start loading the rest after a delay
-    }
-    
-    // Load a specific page image
-    function loadPageImage(pageNum) {
-        const pageIndex = pageNum - 1;
-        if (pageIndex >= 0 && pageIndex < pages.length) {
-            const page = pages[pageIndex];
-            const img = page.querySelector('img');
-            const placeholder = page.querySelector('.loading-placeholder');
             
-            if (img && img.dataset.src && !img.src) {
-                img.onload = function() {
-                    if (placeholder) {
-                        placeholder.style.display = 'none';
-                    }
-                    img.style.display = 'block';
-                    pagesLoaded++;
-                };
-                
-                img.onerror = function() {
-                    console.error(`Failed to load image ${img.dataset.src}`);
-                    if (placeholder) {
-                        placeholder.textContent = 'Failed to load image';
-                        placeholder.classList.add('error');
-                    }
-                    pagesLoaded++;
-                    
-                    // Retry loading after a delay (optional)
-                    setTimeout(() => {
-                        if (!img.src) {
-                            img.src = img.dataset.src + '?retry=' + new Date().getTime();
-                        }
-                    }, 2000);
-                };
-                
-                img.src = img.dataset.src;
-            }
-        }
-    }
-    
-    // Load a specific thumbnail image
-    function loadThumbnailImage(pageNum) {
-        const thumbnails = document.querySelectorAll('.thumbnail-container');
-        if (pageNum <= thumbnails.length) {
-            const container = thumbnails[pageNum - 1];
-            const thumbnail = container.querySelector('.thumbnail');
-            const placeholder = container.querySelector('.thumbnail-placeholder');
+            // Add error class
+            img.classList.add('error');
             
-            if (thumbnail && thumbnail.dataset.src && !thumbnail.src) {
-                thumbnail.onload = function() {
-                    if (placeholder) {
-                        placeholder.style.display = 'none';
-                    }
-                    thumbnail.style.display = 'block';
-                };
-                
-                thumbnail.onerror = function() {
-                    console.error(`Failed to load thumbnail ${thumbnail.dataset.src}`);
-                    // Keep the placeholder visible on error
-                };
-                
-                thumbnail.src = thumbnail.dataset.src;
-            }
-        }
-    }
-    
-    function updateActiveThumbnail() {
-        const thumbnailContainers = document.querySelectorAll('.thumbnail-container');
-        thumbnailContainers.forEach((container, index) => {
-            if (index + 1 === currentPage) {
-                container.classList.add('active');
+            // Attempt to reload the image
+            if (img.getAttribute('data-retry') !== 'true') {
+                // Try once more after a delay
+                img.setAttribute('data-retry', 'true');
+                setTimeout(() => {
+                    const originalSrc = img.getAttribute('data-src') || img.src;
+                    img.src = originalSrc + '?reload=' + new Date().getTime();
+                }, 1000);
             } else {
-                container.classList.remove('active');
+                // If retry failed, use a placeholder
+                img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 1 1%22%3E%3Crect width%3D%221%22 height%3D%221%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
             }
         });
     }
     
-    function animatePageTurn(from, to) {
-        // Ensure the target page image is loaded before turning
-        loadPageImage(to);
+    // Navigation functions
+    let currentPage = 1;
+    
+    function goToPage(pageNum) {
+        if (pageNum < 1 || pageNum > totalPages) return;
         
-        // If adjacent pages aren't loaded yet, load them too
-        if (to + 1 <= totalPages) loadPageImage(to + 1);
-        if (to - 1 >= 1) loadPageImage(to - 1);
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(page => {
+            page.style.display = 'none';
+        });
         
-        // Only animate if going forward one page
-        if (to === from + 1) {
-            const currentPageElem = pages[from - 1];
-            currentPageElem.classList.add('turning');
+        // Show the target page
+        const targetPage = document.querySelector(`.page[data-page="${pageNum}"]`);
+        if (targetPage) {
+            targetPage.style.display = 'block';
             
-            setTimeout(() => {
-                currentPageElem.style.display = 'none';
-                currentPageElem.classList.remove('turning');
-                pages[to - 1].style.display = 'block';
-            }, 250);
-        } else {
-            // For all other navigation, just switch pages
-            pages[from - 1].style.display = 'none';
-            pages[to - 1].style.display = 'block';
+            // Preload the next few pages
+            preloadPages(pageNum);
+            
+            // Update current page
+            currentPage = pageNum;
+            
+            // Update thumbnails
+            updateThumbnailHighlight(pageNum);
         }
     }
     
-    function goToPage(pageNumber) {
-        if (pageNumber < 1 || pageNumber > totalPages) return;
-        
-        // Animate page turn
-        animatePageTurn(currentPage, pageNumber);
-        
-        // Update current page
-        currentPage = pageNumber;
-        
-        // Update page display
-        pageDisplay.textContent = `Page ${currentPage} of ${totalPages}`;
-        
-        // Update active thumbnail
-        updateActiveThumbnail();
-        
-        // Scroll thumbnail into view
-        const activeThumb = document.querySelector('.thumbnail-container.active');
-        if (activeThumb) {
-            activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-        }
-    }
-    
-    prevBtn.addEventListener('click', function() {
-        goToPage(currentPage - 1);
-    });
-    
-    nextBtn.addEventListener('click', function() {
-        goToPage(currentPage + 1);
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            goToPage(currentPage - 1);
-        } else if (e.key === 'ArrowRight') {
+    function nextPage() {
+        if (currentPage < totalPages) {
             goToPage(currentPage + 1);
-        } else if (e.key === 'Home') {
-            goToPage(1);
-        } else if (e.key === 'End') {
-            goToPage(totalPages);
-        }
-    });
-    
-    // Mouse wheel navigation with debounce
-    let wheelTimeout = null;
-    document.addEventListener('wheel', function(e) {
-        if (wheelTimeout) {
-            clearTimeout(wheelTimeout);
-        }
-        
-        wheelTimeout = setTimeout(() => {
-            if (e.deltaY > 0) {
-                goToPage(currentPage + 1);
-            } else {
-                goToPage(currentPage - 1);
-            }
-        }, 100);
-    });
-    
-    // Touch swipe navigation
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    document.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    document.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-    
-    function handleSwipe() {
-        if (touchEndX < touchStartX - 50) {
-            goToPage(currentPage + 1); // Swipe left
-        }
-        if (touchEndX > touchStartX + 50) {
-            goToPage(currentPage - 1); // Swipe right
         }
     }
     
-    // Initialize immediately instead of waiting for all images
-    initializeFlipbook();
+    function prevPage() {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    }
+    
+    // Preload nearby pages for smoother navigation
+    function preloadPages(currentPageNum) {
+        // Preload next 3 pages and previous page
+        const preloadRange = 3;
+        
+        for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + preloadRange, totalPages); i++) {
+            const img = document.querySelector(`.page[data-page="${i}"] img`);
+            if (img && img.getAttribute('data-src') && !img.src) {
+                img.src = img.getAttribute('data-src');
+            }
+        }
+        
+        // Also preload previous page if not already loaded
+        if (currentPageNum > 1) {
+            const prevImg = document.querySelector(`.page[data-page="${currentPageNum - 1}"] img`);
+            if (prevImg && prevImg.getAttribute('data-src') && !prevImg.src) {
+                prevImg.src = prevImg.getAttribute('data-src');
+            }
+        }
+    }
+    
+    // Update thumbnail highlight
+    function updateThumbnailHighlight(pageNum) {
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        // Add active class to current thumbnail
+        const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
+        if (currentThumb) {
+            currentThumb.classList.add('active');
+            
+            // Scroll thumbnail into view if needed
+            currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+    
+    // Start with page 1
+    goToPage(1);
 });
+
+// Progressive image loading function (if you have high-resolution images)
+function loadProgressiveImages() {
+    const images = document.querySelectorAll('[data-high-res]');
+    
+    images.forEach(img => {
+        // Start with low-res version
+        const highResSrc = img.getAttribute('data-high-res');
+        
+        if (highResSrc) {
+            // Create a new image object to preload high-res version
+            const highResImg = new Image();
+            
+            highResImg.onload = function() {
+                // Once high-res is loaded, swap the src
+                img.src = highResSrc;
+                
+                // Add a class for any transition effects
+                img.classList.add('high-res-loaded');
+            };
+            
+            // Start loading the high-res version
+            highResImg.src = highResSrc;
+        }
+    });
+}
