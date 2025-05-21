@@ -1,281 +1,139 @@
-/* Updated style.css with image error handling styles */
-
-/* Basic Reset */
-* {
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    overflow: hidden;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    min-height: 100vh;
+.flipbook-container {
+    width: 100%;
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* Flipbook Styles */
-.flipbook-container {
-    margin: 20px auto;
-    position: relative;
-    width: 90%;
-    max-width: 800px;
-    height: 500px;
-    perspective: 1500px;
+    background-color: #333;
 }
 
 #flipbook {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 80vh;
     position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
+    perspective: 1500px;
 }
 
 .page {
     position: absolute;
     width: 50%;
     height: 100%;
-    top: 0;
-    background-color: white;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 0 3px 3px 0;
-    overflow: hidden;
-    transform-origin: left center;
-    transition: transform 0.5s;
-    z-index: 1;
-    backface-visibility: hidden;
+    background-color: #fff;
+    transition: transform 0.5s ease;
     transform-style: preserve-3d;
+    transform-origin: left center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
-.page:nth-child(even) {
-    border-radius: 3px 0 0 3px;
-    transform-origin: right center;
-}
-
-.page-content {
-    position: absolute;
+.page img {
     width: 100%;
     height: 100%;
-    padding: 20px;
+    object-fit: cover;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.controls {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
 }
 
-.page-content h2 {
-    margin-bottom: 20px;
-    color: #2c3e50;
+.controls button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.page-content p {
-    line-height: 1.6;
-    margin-bottom: 15px;
+.controls button:hover {
+    background-color: #0056b3;
 }
 
-.page-content img {
-    max-width: 80%;
-    margin: 15px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.3s ease;
+.page-number {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
-/* Style for broken images */
-.image-error {
-    border: 2px dashed #e74c3c;
-    padding: 5px;
-    opacity: 0.7;
-    background-color: #f8d7da;
+.thumbnails {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+    background-color: #222;
+    gap: 10px;
+    max-width: 100%;
 }
 
-/* Add loading indicator for images */
-.page-content img:not([src]) {
-    min-height: 150px;
-    background-color: #f0f0f0;
-    position: relative;
+.thumbnail {
+    width: 60px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    object-fit: cover;
 }
 
-.page-content img:not([src])::after {
-    content: "Loading...";
+.thumbnail:hover {
+    border-color: #007bff;
+}
+
+.thumbnail.active {
+    border-color: #ff0000;
+}
+
+.loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #777;
-}
-
-.page-content ul {
-    text-align: left;
-    padding-left: 20px;
-    margin: 15px 0;
-}
-
-.page-content ul li {
-    margin-bottom: 8px;
-}
-
-/* Cover Pages */
-.cover, .back-cover {
-    background: linear-gradient(135deg, #3498db, #2c3e50);
     color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
+    font-size: 24px;
 }
 
-.cover h1, .back-cover h2 {
-    margin-bottom: 20px;
-    font-size: 2.5em;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #flipbook {
+        width: 95%;
+        height: 70vh;
+    }
+    
+    .controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+    .thumbnail {
+        width: 40px;
+        height: 60px;
+    }
 }
 
-.cover p, .back-cover p {
-    font-size: 1.2em;
-}
-
-/* Cover and back cover images */
-.cover img, .back-cover img {
-    max-width: 70%;
-    max-height: 40%;
-    border-radius: 8px;
-    margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Page Turning Effect */
-.turning {
-    animation: turnPage 0.5s ease-in-out;
+/* Animation for page turn effect */
+.page.turning {
+    animation: turnPage 0.5s ease forwards;
 }
 
 @keyframes turnPage {
     0% { transform: rotateY(0deg); }
     100% { transform: rotateY(-180deg); }
-}
-
-/* Corner Indicators */
-.page:not(.cover):not(.back-cover)::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-style: solid;
-    border-width: 0 0 30px 30px;
-    border-color: transparent transparent #ddd transparent;
-    transition: border-color 0.3s;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.page:not(.cover):not(.back-cover):hover::before {
-    border-color: transparent transparent #3498db transparent;
-}
-
-/* Controls */
-.controls {
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-}
-
-button {
-    padding: 10px 15px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #2980b9;
-}
-
-button:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-}
-
-#page-num, #total-pages {
-    font-weight: bold;
-    font-size: 18px;
-}
-
-/* Options */
-.options {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-}
-
-#zoom-slider {
-    width: 150px;
-}
-
-/* Image loading overlay */
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.6; }
-}
-
-.loading-image {
-    animation: pulse 1.5s infinite;
-    background-color: #f0f0f0;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .flipbook-container {
-        height: 400px;
-    }
-    
-    .page-content h2 {
-        font-size: 1.5em;
-    }
-    
-    .page-content p {
-        font-size: 0.9em;
-    }
-    
-    .cover h1, .back-cover h2 {
-        font-size: 2em;
-    }
-}
-
-@media (max-width: 480px) {
-    .flipbook-container {
-        height: 300px;
-    }
-    
-    button {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-    
-    .options {
-        flex-direction: column;
-        gap: 10px;
-    }
 }
