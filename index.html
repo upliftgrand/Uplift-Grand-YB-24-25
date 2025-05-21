@@ -4,194 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Flipbook</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            padding: 20px;
-            width: 100%;
-        }
-        
-        .flipbook-container {
-            width: 100%;
-            max-width: 1000px;
-            height: 70vh;
-            min-height: 500px;
-            position: relative;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-        
-        #flipbook {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            perspective: 1500px;
-        }
-        
-        .page {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            top: 0;
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            transform-origin: left center;
-            transition: transform 0.5s;
-            overflow: hidden;
-            display: none;
-        }
-        
-        .page:nth-child(odd) {
-            transform-origin: right center;
-            right: 0;
-        }
-        
-        .page:nth-child(even) {
-            left: 0;
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
-        .page.flipped {
-            transform: rotateY(-180deg);
-        }
-        
-        .page-content {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .page img {
-            max-width: 100%;
-            max-height: 80%;
-            object-fit: contain;
-            margin: 10px 0;
-        }
-        
-        .cover, .back-cover {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background-color: #34495e;
-            color: white;
-        }
-        
-        .cover h1, .back-cover h2 {
-            margin-bottom: 20px;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            width: 100%;
-        }
-        
-        button {
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .options {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        
-        #zoom-slider {
-            margin: 0 15px;
-        }
-        
-        .fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1000;
-            background-color: #fff;
-            padding: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .flipbook-container {
-                height: 50vh;
-                min-height: 400px;
-            }
-            
-            .page {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="flipbook-container">
             <div id="flipbook">
-                <!-- Make the cover page 1 -->
                 <div class="page cover active">
                     <div class="page-content">
                         <h1>My Flipbook</h1>
-                        <p>Page 1 - Cover Page</p>
-                        <!-- Use placeholder image for cover -->
-                        <img src="/api/placeholder/400/320" alt="Cover image">
+                        <p>Click the corners to flip pages</p>
+                        <!-- Replace with your actual cover image path -->
+                        <img src="images/cover.jpg" alt="Cover image">
+                    </div>
+                </div>
+                <div class="page">
+                    <div class="page-content">
+                        <h2>Page 1</h2>
+                        <img src="images/page1.jpg" alt="Page 1 image">
                     </div>
                 </div>
                 <div class="page">
                     <div class="page-content">
                         <h2>Page 2</h2>
-                        <img src="/api/placeholder/400/320" alt="Page 2 image">
-                    </div>
-                </div>
-                <div class="page">
-                    <div class="page-content">
-                        <h2>Page 2</h2>
-                        <img src="/api/placeholder/400/320" alt="Page 2 image">
+                        <img src="images/page2.jpg" alt="Page 2 image">
                     </div>
                 </div>                     
                 <div class="page">
@@ -206,20 +42,7 @@
                     </div>
                 </div>
                 
-                <div class="page">
-                    <div class="page-content">
-                        <h2>Page 4</h2>
-                        <img src="/api/placeholder/400/320" alt="Another sample image">
-                    </div>
-                </div>
-                
                 <!-- Add more pages as needed -->
-                <div class="page">
-                    <div class="page-content">
-                        <h2>Page 5</h2>
-                        <img src="/api/placeholder/400/320" alt="Another sample image">
-                    </div>
-                </div>
                 
                 <div class="page back-cover">
                     <div class="page-content">
@@ -244,118 +67,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const flipbook = document.getElementById('flipbook');
-            const pages = document.querySelectorAll('.page');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const pageNum = document.getElementById('page-num');
-            const totalPages = document.getElementById('total-pages');
-            const zoomSlider = document.getElementById('zoom-slider');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            const container = document.querySelector('.container');
-            
-            let currentPage = 0;
-            let scale = 1;
-            
-            // Initialize
-            updatePageDisplay();
-            totalPages.textContent = pages.length;
-            
-            // Event listeners
-            prevBtn.addEventListener('click', prevPage);
-            nextBtn.addEventListener('click', nextPage);
-            zoomSlider.addEventListener('input', handleZoom);
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            
-            // Add touch/mouse events for flipping
-            pages.forEach((page, index) => {
-                page.addEventListener('click', function(e) {
-                    const rect = page.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    
-                    // If clicked on right side, go next, if left side, go prev
-                    if (x > rect.width / 2) {
-                        nextPage();
-                    } else {
-                        prevPage();
-                    }
-                });
-            });
-            
-            function updatePageDisplay() {
-                pages.forEach((page, index) => {
-                    page.classList.remove('active');
-                    page.classList.remove('flipped');
-                });
-                
-                pages[currentPage].classList.add('active');
-                
-                // Display page number
-                pageNum.textContent = currentPage + 1;
-                
-                // Enable/disable buttons
-                prevBtn.disabled = currentPage === 0;
-                nextBtn.disabled = currentPage === pages.length - 1;
-            }
-            
-            function prevPage() {
-                if (currentPage > 0) {
-                    currentPage--;
-                    updatePageDisplay();
-                }
-            }
-            
-            function nextPage() {
-                if (currentPage < pages.length - 1) {
-                    const currentPageElement = pages[currentPage];
-                    currentPageElement.classList.add('flipped');
-                    
-                    setTimeout(() => {
-                        currentPage++;
-                        updatePageDisplay();
-                    }, 500);
-                }
-            }
-            
-            function handleZoom() {
-                scale = zoomSlider.value;
-                flipbook.style.transform = `scale(${scale})`;
-            }
-            
-            function toggleFullscreen() {
-                container.classList.toggle('fullscreen');
-                if (container.classList.contains('fullscreen')) {
-                    fullscreenBtn.textContent = 'Exit Fullscreen';
-                } else {
-                    fullscreenBtn.textContent = 'Fullscreen';
-                }
-            }
-            
-            // Handle keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight' || e.key === ' ') {
-                    nextPage();
-                } else if (e.key === 'ArrowLeft') {
-                    prevPage();
-                }
-            });
-            
-            // Preload images for better performance
-            function preloadImages() {
-                const images = document.querySelectorAll('img');
-                images.forEach(img => {
-                    const src = img.getAttribute('src');
-                    if (src) {
-                        const newImg = new Image();
-                        newImg.src = src;
-                    }
-                });
-            }
-            
-            preloadImages();
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
