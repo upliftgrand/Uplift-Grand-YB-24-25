@@ -453,3 +453,15 @@
                 const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
                 if (currentThumb) {
                     currentThumb.classList.add('active');
+                    
+                    // Scroll thumbnail into view if needed
+                    currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
+            
+            // Start with page 1
+            goToPage(1);
+        });
+    </script>
+</body>
+</html>
