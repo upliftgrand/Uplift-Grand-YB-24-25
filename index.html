@@ -1,354 +1,455 @@
-
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <title>Uplift Grand YB 24-25</title> <style> body { margin: 0; padding: 0; font-family: Arial, sans-serif; backgroun
-
-pasted
-
-correct this code to fix the image load issue
-
-I'll help you fix the image loading issue in your flipbook application. Let me analyze the code and make the necessary corrections.
-
-The main issue appears to be with how the images are loaded and displayed. There are a few areas that need to be addressed to make the image loading more reliable.
-
-Here's a corrected version of your code:
-
-
-Fixed Flipbook Code
-Interactive artifact 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Uplift Grand YB 24-25</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      overflow: hidden;
-    }
-
-    .flipbook-container {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #333;
-    }
-
-    #flipbook {
-      width: 90%;
-      height: 80vh;
-      position: relative;
-      perspective: 1500px;
-    }
-
-    .page {
-      position: absolute;
-      width: 50%;
-      height: 100%;
-      background-color: #fff;
-      transition: transform 0.5s ease;
-      transform-style: preserve-3d;
-      transform-origin: left center;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
-
-    .page img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      -webkit-user-select: none;
-      user-select: none;
-      background-color: white;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-      gap: 20px;
-    }
-
-    .controls button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .controls button:hover {
-      background-color: #0056b3;
-    }
-
-    .page-number {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .thumbnails {
-      display: flex;
-      overflow-x: auto;
-      padding: 10px;
-      background-color: #222;
-      gap: 10px;
-      max-width: 100%;
-    }
-
-    .thumbnail {
-      width: 60px;
-      height: 80px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      object-fit: cover;
-      background-color: white;
-    }
-
-    .thumbnail:hover {
-      border-color: #007bff;
-    }
-
-    .thumbnail.active {
-      border-color: #ff0000;
-    }
-
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 24px;
-    }
-
-    @media (max-width: 768px) {
-      #flipbook {
-        width: 95%;
-        height: 70vh;
-      }
-
-      .controls button {
-        padding: 8px 16px;
-        font-size: 14px;
-      }
-
-      .thumbnail {
-        width: 40px;
-        height: 60px;
-      }
-    }
-
-    .page.turning {
-      animation: turnPage 0.5s ease forwards;
-    }
-
-    @keyframes turnPage {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(-180deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipbook</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+        .flipbook-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+        }
+        #flipbook {
+            width: 90%;
+            height: 80vh;
+            position: relative;
+            perspective: 1500px;
+        }
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background-color: #fff;
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+            transform-origin: left center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            overflow: hidden; /* Prevent image overflow */
+        }
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            -webkit-user-select: none;
+            user-select: none;
+            display: block; /* Fix potential inline display issues */
+            max-width: 100%; /* Ensure image doesn't exceed container */
+        }
+        /* Add error handling for images */
+        .page img.error {
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-style: italic;
+            color: #999;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+        .page-number {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .thumbnails {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            background-color: #222;
+            gap: 10px;
+            max-width: 100%;
+        }
+        .thumbnail {
+            width: 60px;
+            height: 80px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            object-fit: cover;
+            background-color: #fff; /* Add background in case image fails to load */
+        }
+        .thumbnail:hover {
+            border-color: #007bff;
+        }
+        .thumbnail.active {
+            border-color: #ff0000;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 100; /* Ensure loading appears above other elements */
+        }
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #flipbook {
+                width: 95%;
+                height: 70vh;
+            }
+            
+            .controls button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .thumbnail {
+                width: 40px;
+                height: 60px;
+            }
+        }
+        /* Animation for page turn effect */
+        .page.turning {
+            animation: turnPage 0.5s ease forwards;
+        }
+        @keyframes turnPage {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(-180deg); }
+        }
+    </style>
 </head>
 <body>
-  <div class="flipbook-container">
-    <div id="loading" class="loading">Loading pages...</div>
-    <div id="flipbook" style="display: none;"></div>
-    <div class="controls">
-      <button id="prev">Previous</button>
-      <span id="page-display">Page 1 of 94</span>
-      <button id="next">Next</button>
+    <div class="flipbook-container">
+        <div id="flipbook">
+            <!-- Pages will be dynamically added by JavaScript -->
+        </div>
+        
+        <div class="controls">
+            <button id="prev-btn">Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
+        
+        <div class="thumbnails">
+            <!-- Thumbnails will be dynamically added by JavaScript -->
+        </div>
     </div>
-    <div class="thumbnails" id="thumbnails"></div>
-  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const flipbook = document.getElementById('flipbook');
-      const prevBtn = document.getElementById('prev');
-      const nextBtn = document.getElementById('next');
-      const pageDisplay = document.getElementById('page-display');
-      const thumbnailsContainer = document.getElementById('thumbnails');
-      const loading = document.getElementById('loading');
-
-      const totalPages = 94;
-      let currentPage = 1;
-      const pages = [];
-      let loadedImages = 0;
-
-      // Placeholder image for failed loads
-      const placeholderSVG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="30" text-anchor="middle" fill="%23999">Image not found</text></svg>';
-      
-      function getImagePath(pageNum) {
-        // Ensure page number has leading zeros if needed (e.g., page001.jpg)
-        const paddedNum = String(pageNum).padStart(3, '0');
-        return `./page${paddedNum}.jpg`;
-      }
-
-      function preloadImages() {
-        loading.textContent = 'Loading pages... 0%';
-        
-        // Create an array to track loaded status
-        const imageStatus = new Array(totalPages).fill(false);
-        
-        function checkAllLoaded() {
-          loadedImages++;
-          const percent = Math.round((loadedImages / totalPages) * 100);
-          loading.textContent = `Loading pages... ${percent}%`;
-          
-          // Initialize flipbook once all images have been attempted to load
-          // or at least 10 images have loaded (so the user can start browsing)
-          if (loadedImages >= totalPages || loadedImages >= 10) {
-            initializeFlipbook();
-          }
-        }
-
-        // Try different file naming patterns if needed
-        const possibleExtensions = ['jpg', 'jpeg', 'png'];
-        const possiblePrefixes = ['page', 'p', ''];
-        
-        for (let i = 1; i <= totalPages; i++) {
-          // Try to load with standard path first
-          tryLoadImage(i, 0, 0);
-        }
-        
-        function tryLoadImage(pageNum, extIndex, prefixIndex) {
-          if (extIndex >= possibleExtensions.length) {
-            if (prefixIndex >= possiblePrefixes.length - 1) {
-              // All patterns tried, mark as loaded but failed
-              checkAllLoaded();
-              return;
-            }
-            // Try next prefix pattern
-            tryLoadImage(pageNum, 0, prefixIndex + 1);
-            return;
-          }
-          
-          const ext = possibleExtensions[extIndex];
-          const prefix = possiblePrefixes[prefixIndex];
-          const paddedNum = String(pageNum).padStart(3, '0');
-          const path = `./${prefix}${paddedNum}.${ext}`;
-          
-          const img = new Image();
-          
-          img.onload = function() {
-            if (!imageStatus[pageNum - 1]) {
-              imageStatus[pageNum - 1] = true;
-              // Store successful path pattern
-              window.successfulPattern = { prefix, ext };
-              checkAllLoaded();
-            }
-          };
-          
-          img.onerror = function() {
-            // Try next extension
-            tryLoadImage(pageNum, extIndex + 1, prefixIndex);
-          };
-          
-          img.src = path;
-        }
-
-        // Fallback if images are taking too long
-        setTimeout(() => {
-          if (flipbook.style.display === 'none') {
-            initializeFlipbook();
-          }
-        }, 5000);
-      }
-
-      function initializeFlipbook() {
-        if (flipbook.children.length > 0) return; // Prevent duplicate initialization
-        
-        loading.style.display = 'none';
-        flipbook.style.display = 'block';
-
-        // Use detected pattern if available
-        const pattern = window.successfulPattern || { prefix: 'page', ext: 'jpg' };
-
-        for (let i = 1; i <= totalPages; i++) {
-          const page = document.createElement('div');
-          page.className = 'page';
-          page.style.display = i === 1 ? 'block' : 'none';
-          page.style.zIndex = totalPages - i;
-
-          const img = document.createElement('img');
-          const paddedNum = String(i).padStart(3, '0');
-          img.src = `./${pattern.prefix}${paddedNum}.${pattern.ext}`;
-          img.alt = `Page ${i}`;
-          img.draggable = false;
-          img.loading = "lazy"; // Use browser's lazy loading
-
-          img.onerror = function() {
-            // Try unpaddedNum as fallback
-            const unpaddedPath = `./${pattern.prefix}${i}.${pattern.ext}`;
-            img.src = unpaddedPath;
+    <script>
+        // Flipbook initialization and image handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables and configuration
+            const totalPages = 94; // Total number of pages (page1.jpg through page94.jpg)
+            const imageBasePath = './'; // Path to your images folder - update this if needed
+            const imagePrefix = 'page';
+            const imageExtension = '.jpg';
             
-            img.onerror = function() {
-              this.src = placeholderSVG;
-            };
-          };
-
-          const pageNumber = document.createElement('div');
-          pageNumber.className = 'page-number';
-          pageNumber.textContent = i;
-
-          page.appendChild(img);
-          page.appendChild(pageNumber);
-          flipbook.appendChild(page);
-          pages.push(page);
-
-          const thumb = document.createElement('img');
-          thumb.className = 'thumbnail';
-          thumb.src = img.src; // Use same source as main image
-          thumb.dataset.page = i;
-          thumb.alt = `Thumbnail ${i}`;
-          thumb.loading = "lazy";
-          
-          thumb.onerror = function() {
-            this.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" viewBox="0 0 60 80"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="12" text-anchor="middle" fill="%23999">${i}</text></svg>`;
-          };
-          
-          thumb.addEventListener('click', () => goToPage(i));
-          thumbnailsContainer.appendChild(thumb);
-        }
-
-        updateUI();
-      }
-
-      function goToPage(num) {
-        if (num < 1 || num > totalPages) return;
-
-        // Add visual feedback for page turning
-        if (pages[currentPage - 1]) {
-          pages[currentPage - 1].style.display = 'none';
-        }
-        
-        if (pages[num - 1]) {
-          pages[num - 1].style.display = 'block';
-          
-          // Preload adjacent pages for smoother browsing
-          preloadAdjacentPages(num);
-        }
-        
-        currentPage = num;
-        updateUI();
-      }
-      
-      function preloadAdjacentPages(currentNum) {
-        // Preloa
+            // Initialize the flipbook
+            initFlipbook();
+            
+            // Main flipbook initialization function
+            function initFlipbook() {
+                const flipbook = document.getElementById('flipbook');
+                if (!flipbook) {
+                    console.error('Flipbook container not found!');
+                    return;
+                }
+                
+                // Clear existing content
+                flipbook.innerHTML = '';
+                
+                // Create loading message
+                const loadingMessage = document.createElement('div');
+                loadingMessage.className = 'loading';
+                loadingMessage.textContent = 'Loading flipbook...';
+                flipbook.appendChild(loadingMessage);
+                
+                // Create pages
+                createPages();
+                
+                // Initialize thumbnails if the container exists
+                createThumbnails();
+                
+                // Setup navigation buttons
+                setupNavigation();
+                
+                // Remove loading message when ready
+                setTimeout(() => {
+                    const loading = document.querySelector('.loading');
+                    if (loading) loading.remove();
+                }, 1500);
+            }
+            
+            // Create all pages for the flipbook
+            function createPages() {
+                const flipbook = document.getElementById('flipbook');
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    const page = document.createElement('div');
+                    page.className = 'page';
+                    page.setAttribute('data-page', i);
+                    
+                    // Only show first page initially, hide others
+                    if (i > 1) {
+                        page.style.display = 'none';
+                    }
+                    
+                    const img = document.createElement('img');
+                    const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
+                    img.setAttribute('data-src', imgPath); // Use data-src for lazy loading
+                    
+                    // For the first few pages, load immediately
+                    if (i <= 3) {
+                        img.src = imgPath;
+                    }
+                    
+                    // Add page number
+                    const pageNumber = document.createElement('div');
+                    pageNumber.className = 'page-number';
+                    pageNumber.textContent = i;
+                    
+                    // Add to page
+                    page.appendChild(img);
+                    page.appendChild(pageNumber);
+                    flipbook.appendChild(page);
+                    
+                    // Add click event for navigation
+                    page.addEventListener('click', function(e) {
+                        // If click is on the right side, go to next page
+                        const clickX = e.clientX - page.getBoundingClientRect().left;
+                        const pageWidth = page.offsetWidth;
+                        
+                        if (clickX > pageWidth / 2) {
+                            nextPage();
+                        } else {
+                            prevPage();
+                        }
+                    });
+                    
+                    // Add image loading handlers
+                    setupImageLoading(img);
+                }
+            }
+            
+            // Create thumbnails
+            function createThumbnails() {
+                const thumbnailsContainer = document.querySelector('.thumbnails');
+                if (!thumbnailsContainer) return;
+                
+                thumbnailsContainer.innerHTML = '';
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    const thumb = document.createElement('img');
+                    thumb.className = 'thumbnail';
+                    thumb.src = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
+                    thumb.setAttribute('data-page', i);
+                    thumb.alt = `Page ${i} thumbnail`;
+                    
+                    // Set first thumbnail as active
+                    if (i === 1) {
+                        thumb.classList.add('active');
+                    }
+                    
+                    // Add click event to navigate to page
+                    thumb.addEventListener('click', function() {
+                        goToPage(i);
+                    });
+                    
+                    thumbnailsContainer.appendChild(thumb);
+                    
+                    // Add loading handlers
+                    setupImageLoading(thumb);
+                }
+            }
+            
+            // Setup navigation buttons
+            function setupNavigation() {
+                const prevButton = document.querySelector('#prev-btn');
+                const nextButton = document.querySelector('#next-btn');
+                
+                if (prevButton) {
+                    prevButton.addEventListener('click', prevPage);
+                }
+                
+                if (nextButton) {
+                    nextButton.addEventListener('click', nextPage);
+                }
+                
+                // Add keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowRight') {
+                        nextPage();
+                    } else if (e.key === 'ArrowLeft') {
+                        prevPage();
+                    }
+                });
+            }
+            
+            // Image loading and error handling function
+            function setupImageLoading(img) {
+                // Handle lazy loading
+                if (img.getAttribute('data-src') && !img.src) {
+                    // Create observer for lazy loading
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                img.src = img.getAttribute('data-src');
+                                observer.unobserve(img);
+                            }
+                        });
+                    });
+                    
+                    observer.observe(img);
+                }
+                
+                // Add loading indicator
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'loading-indicator';
+                loadingIndicator.textContent = 'Loading...';
+                if (img.parentNode) {
+                    img.parentNode.appendChild(loadingIndicator);
+                }
+                
+                // Handle successful load
+                img.addEventListener('load', function() {
+                    // Remove loading indicator if it exists
+                    const indicator = img.parentNode?.querySelector('.loading-indicator');
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                });
+                
+                // Handle loading errors
+                img.addEventListener('error', function() {
+                    // Remove loading indicator if it exists
+                    const indicator = img.parentNode?.querySelector('.loading-indicator');
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                    
+                    // Add error class
+                    img.classList.add('error');
+                    
+                    // Attempt to reload the image
+                    if (img.getAttribute('data-retry') !== 'true') {
+                        // Try once more after a delay
+                        img.setAttribute('data-retry', 'true');
+                        setTimeout(() => {
+                            const originalSrc = img.getAttribute('data-src') || img.src;
+                            img.src = originalSrc + '?reload=' + new Date().getTime();
+                        }, 1000);
+                    } else {
+                        // If retry failed, use a placeholder
+                        img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 1 1%22%3E%3Crect width%3D%221%22 height%3D%221%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
+                    }
+                });
+            }
+            
+            // Navigation functions
+            let currentPage = 1;
+            
+            function goToPage(pageNum) {
+                if (pageNum < 1 || pageNum > totalPages) return;
+                
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(page => {
+                    page.style.display = 'none';
+                });
+                
+                // Show the target page
+                const targetPage = document.querySelector(`.page[data-page="${pageNum}"]`);
+                if (targetPage) {
+                    targetPage.style.display = 'block';
+                    
+                    // Preload the next few pages
+                    preloadPages(pageNum);
+                    
+                    // Update current page
+                    currentPage = pageNum;
+                    
+                    // Update thumbnails
+                    updateThumbnailHighlight(pageNum);
+                }
+            }
+            
+            function nextPage() {
+                if (currentPage < totalPages) {
+                    goToPage(currentPage + 1);
+                }
+            }
+            
+            function prevPage() {
+                if (currentPage > 1) {
+                    goToPage(currentPage - 1);
+                }
+            }
+            
+            // Preload nearby pages for smoother navigation
+            function preloadPages(currentPageNum) {
+                // Preload next 3 pages and previous page
+                const preloadRange = 3;
+                
+                for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + preloadRange, totalPages); i++) {
+                    const img = document.querySelector(`.page[data-page="${i}"] img`);
+                    if (img && img.getAttribute('data-src') && !img.src) {
+                        img.src = img.getAttribute('data-src');
+                    }
+                }
+                
+                // Also preload previous page if not already loaded
+                if (currentPageNum > 1) {
+                    const prevImg = document.querySelector(`.page[data-page="${currentPageNum - 1}"] img`);
+                    if (prevImg && prevImg.getAttribute('data-src') && !prevImg.src) {
+                        prevImg.src = prevImg.getAttribute('data-src');
+                    }
+                }
+            }
+            
+            // Update thumbnail highlight
+            function updateThumbnailHighlight(pageNum) {
+                // Remove active class from all thumbnails
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.remove('active');
+                });
+                
+                // Add active class to current thumbnail
+                const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
+                if (currentThumb) {
+                    currentThumb.classList.add('active');
