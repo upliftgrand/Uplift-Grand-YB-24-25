@@ -1,428 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uplift Grand YB 24-25</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uplift Grand YB 24-25</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      overflow: hidden;
+    }
 
-        .flipbook-container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #333;
-        }
+    .flipbook-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #333;
+    }
 
-        #flipbook {
-            width: 90%;
-            height: 80vh;
-            position: relative;
-            perspective: 1500px;
-        }
+    #flipbook {
+      width: 90%;
+      height: 80vh;
+      position: relative;
+      perspective: 1500px;
+    }
 
-        .page {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            background-color: #fff;
-            transition: transform 0.5s ease;
-            transform-style: preserve-3d;
-            transform-origin: left center;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
+    .page {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
 
-        .page img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            -webkit-user-select: none;
-            user-select: none;
-            background-color: white;
-        }
+    .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      -webkit-user-select: none;
+      user-select: none;
+      background-color: white;
+    }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            gap: 20px;
-        }
+    .controls {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
 
-        .controls button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .controls button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-        .controls button:hover {
-            background-color: #0056b3;
-        }
+    .controls button:hover {
+      background-color: #0056b3;
+    }
 
-        .page-number {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+    .page-number {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
 
-        .thumbnails {
-            display: flex;
-            overflow-x: auto;
-            padding: 10px;
-            background-color: #222;
-            gap: 10px;
-            max-width: 100%;
-        }
+    .thumbnails {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      background-color: #222;
+      gap: 10px;
+      max-width: 100%;
+    }
 
-        .thumbnail {
-            width: 60px;
-            height: 80px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            object-fit: cover;
-            background-color: white;
-        }
+    .thumbnail {
+      width: 60px;
+      height: 80px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      object-fit: cover;
+      background-color: white;
+    }
 
-        .thumbnail:hover {
-            border-color: #007bff;
-        }
+    .thumbnail:hover {
+      border-color: #007bff;
+    }
 
-        .thumbnail.active {
-            border-color: #ff0000;
-        }
+    .thumbnail.active {
+      border-color: #ff0000;
+    }
 
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 24px;
-        }
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+    }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #flipbook {
-                width: 95%;
-                height: 70vh;
-            }
-            
-            .controls button {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-            
-            .thumbnail {
-                width: 40px;
-                height: 60px;
-            }
-        }
+    @media (max-width: 768px) {
+      #flipbook {
+        width: 95%;
+        height: 70vh;
+      }
 
-        /* Animation for page turn effect */
-        .page.turning {
-            animation: turnPage 0.5s ease forwards;
-        }
+      .controls button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
 
-        @keyframes turnPage {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(-180deg); }
-        }
-    </style>
+      .thumbnail {
+        width: 40px;
+        height: 60px;
+      }
+    }
+
+    .page.turning {
+      animation: turnPage 0.5s ease forwards;
+    }
+
+    @keyframes turnPage {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(-180deg); }
+    }
+  </style>
 </head>
 <body>
-    <div class="flipbook-container">
-        <div id="loading" class="loading">Loading pages...</div>
-        <div id="flipbook" style="display: none;">
-            <!-- Pages will be dynamically added here -->
-        </div>
-        <div class="controls">
-            <button id="prev">Previous</button>
-            <span id="page-display">Page 1 of 94</span>
-            <button id="next">Next</button>
-        </div>
-        <div class="thumbnails" id="thumbnails">
-            <!-- Thumbnails will be dynamically added here -->
-        </div>
+  <div class="flipbook-container">
+    <div id="loading" class="loading">Loading pages...</div>
+    <div id="flipbook" style="display: none;"></div>
+    <div class="controls">
+      <button id="prev">Previous</button>
+      <span id="page-display">Page 1 of 94</span>
+      <button id="next">Next</button>
     </div>
+    <div class="thumbnails" id="thumbnails"></div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const flipbook = document.getElementById('flipbook');
-            const prevBtn = document.getElementById('prev');
-            const nextBtn = document.getElementById('next');
-            const pageDisplay = document.getElementById('page-display');
-            const thumbnailsContainer = document.getElementById('thumbnails');
-            const loading = document.getElementById('loading');
-            
-            const totalPages = 94;
-            let currentPage = 1;
-            let pagesLoaded = 0;
-            let pages = [];
-            
-            // Log the base URL for debugging
-            console.log("Base URL:", window.location.href);
-            
-            // Fix path issues by ensuring we have the correct base URL
-            const baseUrl = window.location.pathname.includes('/Uplift-Grand-YB-24-25/') 
-                ? '/Uplift-Grand-YB-24-25/' 
-                : '/';
-            
-            console.log("Using base URL:", baseUrl);
-            
-            // Get image path with correct base URL
-            function getImagePath(pageNum) {
-                return `${baseUrl}page${pageNum}.jpg`;
-            }
-            
-            // Log some image paths to console for debugging
-            console.log("Example image paths:");
-            console.log("Page 1:", getImagePath(1));
-            console.log("Page 2:", getImagePath(2));
-            
-            // Preload all images
-            function preloadImages() {
-                let loadedCount = 0;
-                
-                function updateLoadingStatus() {
-                    loadedCount++;
-                    loading.textContent = `Loading pages... ${Math.round((loadedCount/totalPages)*100)}%`;
-                    
-                    if (loadedCount >= totalPages) {
-                        initializeFlipbook();
-                    } else if (loadedCount === 1) {
-                        // If at least one image is loaded, initialize anyway after a timeout
-                        setTimeout(function() {
-                            if (!flipbook.style.display || flipbook.style.display === 'none') {
-                                console.log("Some images still loading, but initializing anyway");
-                                initializeFlipbook();
-                            }
-                        }, 3000);
-                    }
-                }
-                
-                for (let i = 1; i <= totalPages; i++) {
-                    const img = new Image();
-                    img.onload = updateLoadingStatus;
-                    img.onerror = function() {
-                        console.warn(`Failed to load image: ${this.src}`);
-                        updateLoadingStatus();
-                    };
-                    img.src = getImagePath(i);
-                }
-                
-                // Backup if images are slow to load
-                setTimeout(function() {
-                    if (!flipbook.style.display || flipbook.style.display === 'none') {
-                        console.log("Loading timeout reached, initializing flipbook anyway");
-                        initializeFlipbook();
-                    }
-                }, 5000);
-            }
-            
-            function initializeFlipbook() {
-                loading.style.display = 'none';
-                flipbook.style.display = 'block';
-                
-                // Create pages
-                for (let i = 1; i <= totalPages; i++) {
-                    const page = document.createElement('div');
-                    page.className = 'page';
-                    page.style.display = i === 1 ? 'block' : 'none';
-                    page.style.zIndex = totalPages - i;
-                    
-                    const img = document.createElement('img');
-                    img.src = getImagePath(i);
-                    img.alt = `Page ${i}`;
-                    img.draggable = false;
-                    
-                    // Add error handling for individual images
-                    img.onerror = function() {
-                        console.error(`Failed to load image: ${this.src}`);
-                        this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500"><rect width="100%" height="100%" fill="%23ffffff"/><text x="50%" y="50%" font-family="Arial" font-size="30" text-anchor="middle" fill="%23999">Image not found</text><text x="50%" y="60%" font-family="Arial" font-size="20" text-anchor="middle" fill="%23999">Page ' + i + '</text></svg>';
-                    };
-                    
-                    const pageNumber = document.createElement('div');
-                    pageNumber.className = 'page-number';
-                    pageNumber.textContent = i;
-                    
-                    page.appendChild(img);
-                    page.appendChild(pageNumber);
-                    flipbook.appendChild(page);
-                    pages.push(page);
-                    
-                    // Create thumbnail
-                    const thumbnail = document.createElement('img');
-                    thumbnail.className = 'thumbnail';
-                    thumbnail.src = getImagePath(i);
-                    thumbnail.alt = `Thumbnail ${i}`;
-                    thumbnail.dataset.page = i;
-                    
-                    // Add error handling for thumbnails
-                    thumbnail.onerror = function() {
-                        this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" viewBox="0 0 60 80"><rect width="100%" height="100%" fill="%23ffffff"/><text x="50%" y="50%" font-family="Arial" font-size="10" text-anchor="middle" fill="%23999">' + i + '</text></svg>';
-                    };
-                    
-                    thumbnail.addEventListener('click', function() {
-                        goToPage(parseInt(this.dataset.page));
-                    });
-                    thumbnailsContainer.appendChild(thumbnail);
-                }
-                
-                // Set first thumbnail as active
-                updateActiveThumbnail();
-                
-                // Add click event to pages
-                pages.forEach(page => {
-                    page.addEventListener('click', function(e) {
-                        // Only trigger page turn if clicking on the right side
-                        const pageRect = page.getBoundingClientRect();
-                        const clickX = e.clientX - pageRect.left;
-                        
-                        if (clickX > pageRect.width / 2) {
-                            if (currentPage < totalPages) {
-                                goToPage(currentPage + 1);
-                            }
-                        } else {
-                            if (currentPage > 1) {
-                                goToPage(currentPage - 1);
-                            }
-                        }
-                    });
-                });
-            }
-            
-            function updateActiveThumbnail() {
-                const thumbnails = document.querySelectorAll('.thumbnail');
-                thumbnails.forEach((thumb, index) => {
-                    if (index + 1 === currentPage) {
-                        thumb.classList.add('active');
-                    } else {
-                        thumb.classList.remove('active');
-                    }
-                });
-            }
-            
-            function animatePageTurn(from, to) {
-                // Only animate if going forward one page
-                if (to === from + 1) {
-                    const currentPageElem = pages[from - 1];
-                    currentPageElem.classList.add('turning');
-                    
-                    setTimeout(() => {
-                        currentPageElem.style.display = 'none';
-                        currentPageElem.classList.remove('turning');
-                        pages[to - 1].style.display = 'block';
-                    }, 250);
-                } else {
-                    // For all other navigation, just switch pages
-                    pages[from - 1].style.display = 'none';
-                    pages[to - 1].style.display = 'block';
-                }
-            }
-            
-            function goToPage(pageNumber) {
-                if (pageNumber < 1 || pageNumber > totalPages) return;
-                
-                // Animate page turn
-                animatePageTurn(currentPage, pageNumber);
-                
-                // Update current page
-                currentPage = pageNumber;
-                
-                // Update page display
-                pageDisplay.textContent = `Page ${currentPage} of ${totalPages}`;
-                
-                // Update active thumbnail
-                updateActiveThumbnail();
-                
-                // Scroll thumbnail into view
-                const activeThumb = document.querySelector('.thumbnail.active');
-                if (activeThumb) {
-                    activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-                }
-            }
-            
-            prevBtn.addEventListener('click', function() {
-                goToPage(currentPage - 1);
-            });
-            
-            nextBtn.addEventListener('click', function() {
-                goToPage(currentPage + 1);
-            });
-            
-            // Keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft') {
-                    goToPage(currentPage - 1);
-                } else if (e.key === 'ArrowRight') {
-                    goToPage(currentPage + 1);
-                } else if (e.key === 'Home') {
-                    goToPage(1);
-                } else if (e.key === 'End') {
-                    goToPage(totalPages);
-                }
-            });
-            
-            // Mouse wheel navigation
-            document.addEventListener('wheel', function(e) {
-                // Debounce wheel events to prevent too rapid navigation
-                if (this.wheelTimeout) {
-                    clearTimeout(this.wheelTimeout);
-                }
-                
-                this.wheelTimeout = setTimeout(() => {
-                    if (e.deltaY > 0) {
-                        goToPage(currentPage + 1);
-                    } else {
-                        goToPage(currentPage - 1);
-                    }
-                }, 100);
-            });
-            
-            // Touch swipe navigation
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            document.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-            
-            document.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
-            
-            function handleSwipe() {
-                if (touchEndX < touchStartX - 50) {
-                    goToPage(currentPage + 1); // Swipe left
-                }
-                if (touchEndX > touchStartX + 50) {
-                    goToPage(currentPage - 1); // Swipe right
-                }
-            }
-            
-            // Start loading
-            preloadImages();
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const flipbook = document.getElementById('flipbook');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const pageDisplay = document.getElementById('page-display');
+      const thumbnailsContainer = document.getElementById('thumbnails');
+      const loading = document.getElementById('loading');
+
+      const totalPages = 94;
+      let currentPage = 1;
+      const pages = [];
+
+      function getImagePath(pageNum) {
+        return `./page${pageNum}.jpg`;
+      }
+
+      function preloadImages() {
+        let loaded = 0;
+
+        function updateProgress() {
+          loaded++;
+          loading.textContent = `Loading pages... ${Math.round((loaded / totalPages) * 100)}%`;
+
+          if (loaded >= totalPages) {
+            initializeFlipbook();
+          }
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+          const img = new Image();
+          img.onload = updateProgress;
+          img.onerror = updateProgress;
+          img.src = getImagePath(i);
+        }
+
+        setTimeout(() => {
+          if (flipbook.style.display === 'none') {
+            initializeFlipbook();
+          }
+        }, 5000);
+      }
+
+      function initializeFlipbook() {
+        loading.style.display = 'none';
+        flipbook.style.display = 'block';
+
+        for (let i = 1; i <= totalPages; i++) {
+          const page = document.createElement('div');
+          page.className = 'page';
+          page.style.display = i === 1 ? 'block' : 'none';
+          page.style.zIndex = totalPages - i;
+
+          const img = document.createElement('img');
+          img.src = getImagePath(i);
+          img.alt = `Page ${i}`;
+          img.draggable = false;
+
+          img.onerror = function () {
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="30" text-anchor="middle" fill="%23999">Image not found</text></svg>';
+          };
+
+          const pageNumber = document.createElement('div');
+          pageNumber.className = 'page-number';
+          pageNumber.textContent = i;
+
+          page.appendChild(img);
+          page.appendChild(pageNumber);
+          flipbook.appendChild(page);
+          pages.push(page);
+
+          const thumb = document.createElement('img');
+          thumb.className = 'thumbnail';
+          thumb.src = getImagePath(i);
+          thumb.dataset.page = i;
+          thumb.alt = `Thumbnail ${i}`;
+          thumb.onerror = function () {
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" viewBox="0 0 60 80"><rect width="100%" height="100%" fill="%23fff"/><text x="50%" y="50%" font-size="12" text-anchor="middle" fill="%23999">' + i + '</text></svg>';
+          };
+          thumb.addEventListener('click', () => goToPage(i));
+          thumbnailsContainer.appendChild(thumb);
+        }
+
+        updateUI();
+      }
+
+      function goToPage(num) {
+        if (num < 1 || num > totalPages) return;
+
+        pages[currentPage - 1].style.display = 'none';
+        pages[num - 1].style.display = 'block';
+        currentPage = num;
+        updateUI();
+      }
+
+      function updateUI() {
+        pageDisplay.textContent = `Page ${currentPage} of ${totalPages}`;
+        document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+          thumb.classList.toggle('active', index + 1 === currentPage);
         });
-    </script>
+        const activeThumb = document.querySelector('.thumbnail.active');
+        if (activeThumb) {
+          activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        }
+      }
+
+      prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+      nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
+        if (e.key === 'ArrowRight') goToPage(currentPage + 1);
+      });
+
+      let startX = 0;
+      document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+      document.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        if (endX < startX - 50) goToPage(currentPage + 1);
+        if (endX > startX + 50) goToPage(currentPage - 1);
+      });
+
+      preloadImages();
+    });
+  </script>
 </body>
 </html>
