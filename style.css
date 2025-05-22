@@ -1,280 +1,508 @@
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+}
 
-fix this code to correct the image load issuebody {
+body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: 
-#f5f5f5;
-    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow-x: hidden;
+    min-height: 100vh;
 }
+
+/* Main container */
 .flipbook-container {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #333;
-}
-#flipbook {
-    width: 90%;
-    height: 80vh;
-    position: relative;
-    perspective: 1500px;
-}
-.page {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    background-color: #fff;
-    transition: transform 0.5s ease;
-    transform-style: preserve-3d;
-    transform-origin: left center;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-.page img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    -webkit-user-select: none;
-    user-select: none;
-}
-.controls {
-    display: flex;
-    justify-content: center;
     padding: 20px;
     gap: 20px;
 }
-.controls button {
-    padding: 10px 20px;
-    background-color: 
-#007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-.controls button:hover {
-    background-color: 
-#0056b3;
-}
-.page-number {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-}
-.thumbnails {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px;
-    background-color: #222;
-    gap: 10px;
+
+/* Flipbook main area */
+#flipbook {
+    width: min(90vw, 900px);
     max-width: 100%;
+    aspect-ratio: 4/3;
+    position: relative;
+    perspective: 1500px;
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 10px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.thumbnail {
-    width: 60px;
-    height: 80px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-    object-fit: cover;
-}
-.thumbnail:hover {
-    border-color: 
-#007bff;
-}
-.thumbnail.active {
-    border-color: 
-#ff0000;
-}
+
+/* Loading states */
 .loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 24px;
-}
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #flipbook {
-        width: 95%;
-        height: 70vh;
-    }
-
-    .controls button {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-
-    .thumbnail {
-        width: 40px;
-        height: 60px;
-    }
-}
-/* Animation for page turn effect */
-.page.turning {
-    animation: turnPage 0.5s ease forwards;
-}
-@keyframes turnPage {
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(-180deg); }
-}
-
-I'll fix your code to address the image loading issue. Looking at your CSS, I see styling for a flipbook interface, but there might be issues with how images are being loaded or displayed.
-
-
-Fixed Flipbook CSS
-Document 
-
-JavaScript Image Loading Handler
-Code 
-
-
-
-css
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    overflow: hidden;
-}
-.flipbook-container {
-    width: 100%;
-    height: 100vh;
+    text-align: center;
+    z-index: 100;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    background-color: #333;
+    gap: 20px;
 }
-#flipbook {
-    width: 90%;
-    height: 80vh;
-    position: relative;
-    perspective: 1500px;
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    z-index: 15;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+}
+
+/* Page styles */
 .page {
     position: absolute;
-    width: 50%;
+    width: 100%;
     height: 100%;
     background-color: #fff;
-    transition: transform 0.5s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     transform-style: preserve-3d;
     transform-origin: left center;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 5px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    overflow: hidden; /* Prevent image overflow */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
 }
+
+.page:hover {
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
 .page img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     -webkit-user-select: none;
     user-select: none;
-    display: block; /* Fix potential inline display issues */
-    max-width: 100%; /* Ensure image doesn't exceed container */
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    transition: transform 0.3s ease;
 }
-/* Add error handling for images */
+
 .page img.error {
-    background-color: #f8f8f8;
+    background-color: #f8f9fa;
+    color: #6c757d;
     display: flex;
     justify-content: center;
     align-items: center;
     font-style: italic;
-    color: #999;
 }
 
+/* Page number indicator */
+.page-number {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Controls section */
 .controls {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    align-items: center;
+    padding: 15px;
     gap: 20px;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
 .controls button {
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
+    min-width: 120px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    position: relative;
+    overflow: hidden;
 }
-.controls button:hover {
-    background-color: #0056b3;
-}
-.page-number {
+
+.controls button::before {
+    content: '';
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
 }
+
+.controls button:hover::before {
+    left: 100%;
+}
+
+.controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.controls button:active {
+    transform: translateY(0);
+}
+
+.controls button:disabled {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.controls button:disabled::before {
+    display: none;
+}
+
+.page-info {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+/* Thumbnails section */
+.thumbnails-container {
+    width: 100%;
+    max-width: min(90vw, 900px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.thumbnails-container h3 {
+    color: white;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
 .thumbnails {
     display: flex;
     overflow-x: auto;
-    padding: 10px;
-    background-color: #222;
     gap: 10px;
-    max-width: 100%;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
 }
+
+.thumbnails::-webkit-scrollbar {
+    height: 8px;
+}
+
+.thumbnails::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.thumbnails::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 .thumbnail {
     width: 60px;
     height: 80px;
     cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
     object-fit: cover;
-    background-color: #fff; /* Add background in case image fails to load */
+    background-color: #fff;
+    border-radius: 6px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+
 .thumbnail:hover {
     border-color: #007bff;
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
+
 .thumbnail.active {
-    border-color: #ff0000;
+    border-color: #ff4757;
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
 }
-.loading {
+
+/* Fullscreen button */
+.fullscreen-btn {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 24px;
-    z-index: 100; /* Ensure loading appears above other elements */
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 20;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
-/* Responsive adjustments */
+
+.fullscreen-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+/* Zoom functionality */
+.page.zoomed {
+    cursor: zoom-out;
+}
+
+.page.zoomed img {
+    object-fit: cover;
+    cursor: grab;
+    transform: scale(1.2);
+}
+
+.page.zoomed img:active {
+    cursor: grabbing;
+}
+
+/* Page turn animation */
+.page.turning {
+    animation: turnPage 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+}
+
+@keyframes turnPage {
+    0% { 
+        transform: rotateY(0deg);
+        z-index: 10;
+    }
+    50% {
+        transform: rotateY(-90deg);
+        z-index: 10;
+    }
+    100% { 
+        transform: rotateY(-180deg);
+        z-index: 1;
+    }
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
+    .flipbook-container {
+        padding: 10px;
+        gap: 15px;
+    }
+    
     #flipbook {
-        width: 95%;
-        height: 70vh;
+        width: 95vw;
+        aspect-ratio: 3/4;
+    }
+    
+    .controls {
+        padding: 12px;
+        gap: 15px;
     }
     
     .controls button {
-        padding: 8px 16px;
+        padding: 10px 20px;
         font-size: 14px;
+        min-width: 100px;
+    }
+    
+    .page-info {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+    
+    .thumbnail {
+        width: 45px;
+        height: 60px;
+    }
+    
+    .page-number {
+        bottom: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .thumbnails-container {
+        padding: 15px;
+    }
+    
+    .thumbnails-container h3 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flipbook-container {
+        padding: 5px;
+        gap: 10px;
+    }
+    
+    #flipbook {
+        width: 98vw;
+        aspect-ratio: 2/3;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .controls button {
+        width: 180px;
+        max-width: 90vw;
     }
     
     .thumbnail {
         width: 40px;
-        height: 60px;
+        height: 55px;
+    }
+    
+    .thumbnails {
+        gap: 8px;
+    }
+    
+    .fullscreen-btn {
+        top: 10px;
+        right: 10px;
+        padding: 8px;
+        font-size: 14px;
     }
 }
-/* Animation for page turn effect */
-.page.turning {
-    animation: turnPage 0.5s ease forwards;
+
+@media (min-width: 1200px) {
+    #flipbook {
+        width: min(80vw, 1100px);
+        aspect-ratio: 16/10;
+    }
+    
+    .thumbnail {
+        width: 70px;
+        height: 90px;
+    }
+    
+    .controls button {
+        min-width: 140px;
+        font-size: 18px;
+    }
+    
+    .page-info {
+        font-size: 18px;
+    }
 }
-@keyframes turnPage {
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(-180deg); }
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .controls,
+    .thumbnails-container,
+    .fullscreen-btn {
+        display: none;
+    }
+    
+    #flipbook {
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .page {
+        border: 2px solid #000;
+    }
+    
+    .controls button {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .spinner {
+        animation: none;
+        border: 4px solid #fff;
+        border-top: 4px solid transparent;
+    }
 }
