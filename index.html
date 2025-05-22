@@ -3,45 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flipbook</title>
-    <style><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Flipbook</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="flipbook-container">
-        <div id="flipbook">
-            <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
-            <div class="loading" id="initial-loading">
-                <div class="spinner"></div>
-                <p>Loading flipbook...</p>
-            </div>
-            <!-- Pages will be dynamically added by JavaScript -->
-        </div>
-        
-        <div class="controls">
-            <button id="prev-btn" title="Previous Page (Left Arrow)">← Previous</button>
-            <div class="page-info">
-                <span id="current-page">1</span> / <span id="total-pages">94</span>
-            </div>
-            <button id="next-btn" title="Next Page (Right Arrow or Space)">Next →</button>
-        </div>
-        
-        <div class="thumbnails-container">
-            <h3>Quick Navigation</h3>
-            <div class="thumbnails" id="thumbnails">
-                <!-- Thumbnails will be dynamically added by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <script src="scripts.js"></script>
-</body>
-</html>
+    <style>
         body {
             margin: 0;
             padding: 0;
@@ -96,7 +59,6 @@
             max-width: 100%;
             max-height: 100%;
         }
-        /* Add error handling for images */
         .page img.error {
             background-color: #f8f8f8;
             display: flex;
@@ -217,7 +179,6 @@
             font-size: 14px;
         }
         
-        /* Responsive adjustments for better size handling */
         @media (max-width: 768px) {
             .flipbook-container {
                 padding: 5px;
@@ -285,7 +246,6 @@
             }
         }
         
-        /* Animation for page turn effect */
         .page.turning {
             animation: turnPage 0.5s ease forwards;
         }
@@ -294,7 +254,6 @@
             100% { transform: rotateY(-180deg); }
         }
         
-        /* Zoom functionality */
         .page.zoomed {
             cursor: zoom-out;
         }
@@ -306,7 +265,6 @@
             cursor: grabbing;
         }
         
-        /* Fullscreen support */
         .fullscreen-btn {
             position: absolute;
             top: 15px;
@@ -329,7 +287,6 @@
     <div class="flipbook-container">
         <div id="flipbook">
             <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
-            <!-- Pages will be dynamically added by JavaScript -->
         </div>
         
         <div class="controls">
@@ -341,16 +298,14 @@
         </div>
         
         <div class="thumbnails">
-            <!-- Thumbnails will be dynamically added by JavaScript -->
         </div>
     </div>
 
     <script>
-        // Flipbook initialization and image handling
         document.addEventListener('DOMContentLoaded', function() {
-            // Variables and configuration
-            const totalPages = 94; // Total number of pages (page1.jpg through page94.jpg)
-            const imageBasePath = './'; // Path to your images folder - update this if needed
+            // Variables and configuration - CORRECTED IMAGE PATH
+            const totalPages = 94;
+            const imageBasePath = './images/'; // FIXED: Added images/ folder path
             const imagePrefix = 'page';
             const imageExtension = '.jpg';
             
@@ -360,7 +315,6 @@
             // Initialize the flipbook
             initFlipbook();
             
-            // Main flipbook initialization function
             function initFlipbook() {
                 const flipbook = document.getElementById('flipbook');
                 if (!flipbook) {
@@ -368,29 +322,21 @@
                     return;
                 }
                 
-                // Create loading message
                 const loadingMessage = document.createElement('div');
                 loadingMessage.className = 'loading';
                 loadingMessage.textContent = 'Loading flipbook...';
                 flipbook.appendChild(loadingMessage);
                 
-                // Create pages
                 createPages();
-                
-                // Initialize thumbnails if the container exists
                 createThumbnails();
-                
-                // Setup navigation buttons
                 setupNavigation();
                 
-                // Remove loading message when ready
                 setTimeout(() => {
                     const loading = document.querySelector('.loading');
                     if (loading) loading.remove();
                 }, 1500);
             }
             
-            // Create all pages for the flipbook
             function createPages() {
                 const flipbook = document.getElementById('flipbook');
                 
@@ -399,40 +345,33 @@
                     page.className = 'page';
                     page.setAttribute('data-page', i);
                     
-                    // Only show first page initially, hide others
                     if (i > 1) {
                         page.style.display = 'none';
                     }
                     
                     const img = document.createElement('img');
                     const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
-                    img.setAttribute('data-src', imgPath); // Use data-src for lazy loading
+                    img.setAttribute('data-src', imgPath);
                     img.alt = `Page ${i}`;
                     
-                    // For the first few pages, load immediately
                     if (i <= 3) {
                         img.src = imgPath;
                     }
                     
-                    // Add page number
                     const pageNumber = document.createElement('div');
                     pageNumber.className = 'page-number';
                     pageNumber.textContent = i;
                     
-                    // Add to page
                     page.appendChild(img);
                     page.appendChild(pageNumber);
                     flipbook.appendChild(page);
                     
-                    // Add click event for navigation and zoom
                     page.addEventListener('click', function(e) {
-                        // Check if double-click for zoom
                         if (e.detail === 2) {
                             toggleZoom(page);
                             return;
                         }
                         
-                        // Single click navigation
                         setTimeout(() => {
                             if (e.detail === 1) {
                                 const clickX = e.clientX - page.getBoundingClientRect().left;
@@ -447,12 +386,10 @@
                         }, 200);
                     });
                     
-                    // Add image loading handlers
                     setupImageLoading(img);
                 }
             }
             
-            // Create thumbnails
             function createThumbnails() {
                 const thumbnailsContainer = document.querySelector('.thumbnails');
                 if (!thumbnailsContainer) return;
@@ -466,24 +403,19 @@
                     thumb.setAttribute('data-page', i);
                     thumb.alt = `Page ${i} thumbnail`;
                     
-                    // Set first thumbnail as active
                     if (i === 1) {
                         thumb.classList.add('active');
                     }
                     
-                    // Add click event to navigate to page
                     thumb.addEventListener('click', function() {
                         goToPage(i);
                     });
                     
                     thumbnailsContainer.appendChild(thumb);
-                    
-                    // Add loading handlers
                     setupImageLoading(thumb);
                 }
             }
             
-            // Setup navigation buttons
             function setupNavigation() {
                 const prevButton = document.querySelector('#prev-btn');
                 const nextButton = document.querySelector('#next-btn');
@@ -496,7 +428,6 @@
                     nextButton.addEventListener('click', nextPage);
                 }
                 
-                // Add keyboard navigation
                 document.addEventListener('keydown', function(e) {
                     if (e.key === 'ArrowRight' || e.key === ' ') {
                         e.preventDefault();
@@ -505,7 +436,6 @@
                         e.preventDefault();
                         prevPage();
                     } else if (e.key === 'Escape') {
-                        // Exit fullscreen or zoom
                         if (document.fullscreenElement) {
                             document.exitFullscreen();
                         }
@@ -517,11 +447,8 @@
                 });
             }
             
-            // Image loading and error handling function
             function setupImageLoading(img) {
-                // Handle lazy loading
                 if (img.getAttribute('data-src') && !img.src) {
-                    // Create observer for lazy loading
                     const observer = new IntersectionObserver((entries) => {
                         entries.forEach(entry => {
                             if (entry.isIntersecting) {
@@ -534,7 +461,6 @@
                     observer.observe(img);
                 }
                 
-                // Add loading indicator
                 const loadingIndicator = document.createElement('div');
                 loadingIndicator.className = 'loading-indicator';
                 loadingIndicator.textContent = 'Loading...';
@@ -542,65 +468,48 @@
                     img.parentNode.appendChild(loadingIndicator);
                 }
                 
-                // Handle successful load
                 img.addEventListener('load', function() {
-                    // Remove loading indicator if it exists
                     const indicator = img.parentNode?.querySelector('.loading-indicator');
                     if (indicator) {
                         indicator.remove();
                     }
                 });
                 
-                // Handle loading errors
                 img.addEventListener('error', function() {
-                    // Remove loading indicator if it exists
                     const indicator = img.parentNode?.querySelector('.loading-indicator');
                     if (indicator) {
                         indicator.remove();
                     }
                     
-                    // Add error class
                     img.classList.add('error');
                     
-                    // Attempt to reload the image
                     if (img.getAttribute('data-retry') !== 'true') {
-                        // Try once more after a delay
                         img.setAttribute('data-retry', 'true');
                         setTimeout(() => {
                             const originalSrc = img.getAttribute('data-src') || img.src;
                             img.src = originalSrc + '?reload=' + new Date().getTime();
                         }, 1000);
                     } else {
-                        // If retry failed, use a placeholder
                         img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 300 400%22%3E%3Crect width%3D%22300%22 height%3D%22400%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%22150%22 y%3D%22200%22 font-size%3D%2216%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
                     }
                 });
             }
             
-            // Navigation functions
             let currentPage = 1;
             
             function goToPage(pageNum) {
                 if (pageNum < 1 || pageNum > totalPages) return;
                 
-                // Hide all pages
                 document.querySelectorAll('.page').forEach(page => {
                     page.style.display = 'none';
                     page.classList.remove('zoomed');
                 });
                 
-                // Show the target page
                 const targetPage = document.querySelector(`.page[data-page="${pageNum}"]`);
                 if (targetPage) {
                     targetPage.style.display = 'block';
-                    
-                    // Preload the next few pages
                     preloadPages(pageNum);
-                    
-                    // Update current page
                     currentPage = pageNum;
-                    
-                    // Update UI
                     updatePageInfo();
                     updateThumbnailHighlight(pageNum);
                     updateNavigationButtons();
@@ -619,7 +528,6 @@
                 }
             }
             
-            // Update page info display
             function updatePageInfo() {
                 const currentPageSpan = document.getElementById('current-page');
                 if (currentPageSpan) {
@@ -627,7 +535,6 @@
                 }
             }
             
-            // Update navigation button states
             function updateNavigationButtons() {
                 const prevBtn = document.getElementById('prev-btn');
                 const nextBtn = document.getElementById('next-btn');
@@ -641,9 +548,7 @@
                 }
             }
             
-            // Preload nearby pages for smoother navigation
             function preloadPages(currentPageNum) {
-                // Preload next 3 pages and previous page
                 const preloadRange = 3;
                 
                 for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + preloadRange, totalPages); i++) {
@@ -653,7 +558,6 @@
                     }
                 }
                 
-                // Also preload previous page if not already loaded
                 if (currentPageNum > 1) {
                     const prevImg = document.querySelector(`.page[data-page="${currentPageNum - 1}"] img`);
                     if (prevImg && prevImg.getAttribute('data-src') && !prevImg.src) {
@@ -662,33 +566,25 @@
                 }
             }
             
-            // Update thumbnail highlight
             function updateThumbnailHighlight(pageNum) {
-                // Remove active class from all thumbnails
                 document.querySelectorAll('.thumbnail').forEach(thumb => {
                     thumb.classList.remove('active');
                 });
                 
-                // Add active class to current thumbnail
                 const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
                 if (currentThumb) {
                     currentThumb.classList.add('active');
-                    
-                    // Scroll thumbnail into view if needed
                     currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
             }
             
-            // Zoom functionality
             function toggleZoom(page) {
                 page.classList.toggle('zoomed');
             }
             
-            // Start with page 1
             goToPage(1);
         });
         
-        // Fullscreen functionality
         function toggleFullscreen() {
             const flipbook = document.getElementById('flipbook');
             if (!document.fullscreenElement) {
@@ -700,14 +596,11 @@
             }
         }
         
-        // Handle window resize for responsive adjustments
         window.addEventListener('resize', function() {
-            // Trigger a re-layout if needed
             const flipbook = document.getElementById('flipbook');
             if (flipbook) {
-                // Force a repaint to handle aspect ratio changes
                 flipbook.style.display = 'none';
-                flipbook.offsetHeight; // Trigger reflow
+                flipbook.offsetHeight;
                 flipbook.style.display = 'relative';
             }
         });
