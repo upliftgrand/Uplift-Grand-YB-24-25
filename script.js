@@ -1,315 +1,449 @@
-// Flipbook initialization and image handling
-document.addEventListener('DOMContentLoaded', function() {
-    // Variables and configuration
-    const totalPages = 94; // Total number of pages (page1.jpg through page94.jpg)
-    const imageBasePath = './'; // Path to your images folder - update this if needed
-    const imagePrefix = 'page';
-    const imageExtension = '.jpg';
+/**
+ * Digital Flipbook Application
+ * Handles loading and navigation of page1.jpg through page94.jpg
+ */
+
+class DigitalFlipbook {
+    constructor() {
+        // Configuration
+        this.config = {
+            totalPages: 94,
+            imageBasePath: './',  // Adjust this path if images are in a subfolder (e.g., './images/')
+            imagePrefix: 'page',
+            imageExtension: '.jpg',
+            preloadRange: 3,
+            transitionDuration: 500,
+            retryAttempts: 2,
+            retryDelay: 1000
+        };
+        
+        // State
+        this.currentPage = 1;
+        this.isLoading = false;
+        this.loadedImages = new Set();
+        this.failedImages = new Set();
+        
+        // DOM elements
+        this.flipbook = null;
+        this.prevBtn = null;
+        this.nextBtn = null;
+        this.currentPageSpan = null;
+        this.totalPagesSpan = null;
+        this.thumbnailsContainer = null;
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init());
+        } else {
+            this.init();
+        }
+    }
     
-    // Initialize the flipbook
-    initFlipbook();
-    
-    // Main flipbook initialization function
-    function initFlipbook() {
-        const flipbook = document.getElementById('flipbook');
-        if (!flipbook) {
+    /**
+     * Initialize the flipbook
+     */
+    init() {
+        console.log('Initializing Digital Flipbook...');
+        
+        // Get DOM elements
+        this.getDOMElements();
+        
+        if (!this.flipbook) {
             console.error('Flipbook container not found!');
             return;
         }
         
-        // Clear existing content
-        flipbook.innerHTML = '';
+        // Update total pages display
+        if (this.totalPagesSpan) {
+            this.totalPagesSpan.textContent = this.config.totalPages;
+        }
         
-        // Create loading message
-        const loadingMessage = document.createElement('div');
-        loadingMessage.className = 'loading';
-        loadingMessage.textContent = 'Loading flipbook...';
-        flipbook.appendChild(loadingMessage);
+        // Setup the flipbook
+        this.createPages();
+        this.createThumbnails();
+        this.setupNavigation();
+        this.setupKeyboardEvents();
+        this.setupResizeHandler();
         
-        // Create pages
-        createPages();
+        // Start with page 1
+        this.goToPage(1);
         
-        // Initialize thumbnails if the container exists
-        createThumbnails();
-        
-        // Setup navigation buttons
-        setupNavigation();
-        
-        // Remove loading message when ready
+        // Remove initial loading after a delay
         setTimeout(() => {
-            const loading = document.querySelector('.loading');
-            if (loading) loading.remove();
+            const initialLoading = document.getElementById('initial-loading');
+            if (initialLoading) {
+                initialLoading.style.opacity = '0';
+                setTimeout(() => initialLoading.remove(), 300);
+            }
         }, 1500);
+        
+        console.log('Flipbook initialized successfully');
     }
     
-    // Create all pages for the flipbook
-    function createPages() {
-        const flipbook = document.getElementById('flipbook');
+    /**
+     * Get references to DOM elements
+     */
+    getDOMElements() {
+        this.flipbook = document.getElementById('flipbook');
+        this.prevBtn = document.getElementById('prev-btn');
+        this.nextBtn = document.getElementById('next-btn');
+        this.currentPageSpan = document.getElementById('current-page');
+        this.totalPagesSpan = document.getElementById('total-pages');
+        this.thumbnailsContainer = document.getElementById('thumbnails');
+    }
+    
+    /**
+     * Create all pages for the flipbook
+     */
+    createPages() {
+        console.log('Creating pages...');
         
-        for (let i = 1; i <= totalPages; i++) {
-            const page = document.createElement('div');
-            page.className = 'page';
-            page.setAttribute('data-page', i);
-            
-            // Only show first page initially, hide others
-            if (i > 1) {
-                page.style.display = 'none';
-            }
-            
-            const img = document.createElement('img');
-            const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
-            img.setAttribute('data-src', imgPath); // Use data-src for lazy loading
-            
-            // For the first few pages, load immediately
-            if (i <= 3) {
-                img.src = imgPath;
-            }
-            
-            // Add page number
-            const pageNumber = document.createElement('div');
-            pageNumber.className = 'page-number';
-            pageNumber.textContent = i;
-            
-            // Add to page
-            page.appendChild(img);
-            page.appendChild(pageNumber);
-            flipbook.appendChild(page);
-            
-            // Add click event for navigation
-            page.addEventListener('click', function(e) {
-                // If click is on the right side, go to next page
-                const clickX = e.clientX - page.getBoundingClientRect().left;
-                const pageWidth = page.offsetWidth;
-                
-                if (clickX > pageWidth / 2) {
-                    nextPage();
-                } else {
-                    prevPage();
-                }
-            });
-            
-            // Add image loading handlers
-            setupImageLoading(img);
+        for (let i = 1; i <= this.config.totalPages; i++) {
+            const page = this.createPage(i);
+            this.flipbook.appendChild(page);
         }
     }
     
-    // Create thumbnails
-    function createThumbnails() {
-        const thumbnailsContainer = document.querySelector('.thumbnails');
-        if (!thumbnailsContainer) return;
+    /**
+     * Create a single page element
+     */
+    createPage(pageNumber) {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.setAttribute('data-page', pageNumber);
+        page.style.display = pageNumber === 1 ? 'block' : 'none';
         
-        thumbnailsContainer.innerHTML = '';
+        // Create image element
+        const img = document.createElement('img');
+        const imgPath = this.getImagePath(pageNumber);
+        img.setAttribute('data-src', imgPath);
+        img.setAttribute('data-page', pageNumber);
+        img.alt = `Page ${pageNumber}`;
         
-        for (let i = 1; i <= totalPages; i++) {
-            const thumb = document.createElement('img');
-            thumb.className = 'thumbnail';
-            thumb.src = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
-            thumb.setAttribute('data-page', i);
-            thumb.alt = `Page ${i} thumbnail`;
-            
-            // Set first thumbnail as active
-            if (i === 1) {
-                thumb.classList.add('active');
-            }
-            
-            // Add click event to navigate to page
-            thumb.addEventListener('click', function() {
-                goToPage(i);
-            });
-            
-            thumbnailsContainer.appendChild(thumb);
-            
-            // Add loading handlers
-            setupImageLoading(thumb);
+        // Load first few pages immediately
+        if (pageNumber <= 3) {
+            this.loadImage(img, imgPath);
         }
+        
+        // Create page number indicator
+        const pageNumber_div = document.createElement('div');
+        pageNumber_div.className = 'page-number';
+        pageNumber_div.textContent = `${pageNumber}`;
+        
+        // Add elements to page
+        page.appendChild(img);
+        page.appendChild(pageNumber_div);
+        
+        // Add click handlers
+        this.addPageClickHandlers(page);
+        
+        return page;
     }
     
-    // Setup navigation buttons
-    function setupNavigation() {
-        const prevButton = document.querySelector('.controls button:first-child');
-        const nextButton = document.querySelector('.controls button:last-child');
+    /**
+     * Add click handlers to a page
+     */
+    addPageClickHandlers(page) {
+        let clickCount = 0;
+        let clickTimeout = null;
         
-        if (prevButton) {
-            prevButton.addEventListener('click', prevPage);
-        }
-        
-        if (nextButton) {
-            nextButton.addEventListener('click', nextPage);
-        }
-        
-        // Add keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowRight') {
-                nextPage();
-            } else if (e.key === 'ArrowLeft') {
-                prevPage();
+        page.addEventListener('click', (e) => {
+            clickCount++;
+            
+            if (clickCount === 1) {
+                clickTimeout = setTimeout(() => {
+                    // Single click - navigate
+                    this.handlePageClick(e, page);
+                    clickCount = 0;
+                }, 250);
+            } else if (clickCount === 2) {
+                // Double click - zoom
+                clearTimeout(clickTimeout);
+                this.toggleZoom(page);
+                clickCount = 0;
             }
         });
     }
     
-    // Image loading and error handling function
-    function setupImageLoading(img) {
-        // Handle lazy loading
-        if (img.getAttribute('data-src') && !img.src) {
-            // Create observer for lazy loading
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        img.src = img.getAttribute('data-src');
-                        observer.unobserve(img);
-                    }
-                });
-            });
-            
-            observer.observe(img);
+    /**
+     * Handle single click on page for navigation
+     */
+    handlePageClick(e, page) {
+        if (page.classList.contains('zoomed')) {
+            return; // Don't navigate when zoomed
         }
         
-        // Add loading indicator
-        const loadingIndicator = document.createElement('div');
-        loadingIndicator.className = 'loading-indicator';
-        loadingIndicator.textContent = 'Loading...';
-        if (img.parentNode) {
-            img.parentNode.appendChild(loadingIndicator);
+        const rect = page.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const pageWidth = rect.width;
+        
+        // Click on right side = next page, left side = previous page
+        if (clickX > pageWidth / 2) {
+            this.nextPage();
+        } else {
+            this.prevPage();
+        }
+    }
+    
+    /**
+     * Create thumbnail navigation
+     */
+    createThumbnails() {
+        if (!this.thumbnailsContainer) return;
+        
+        console.log('Creating thumbnails...');
+        
+        for (let i = 1; i <= this.config.totalPages; i++) {
+            const thumb = this.createThumbnail(i);
+            this.thumbnailsContainer.appendChild(thumb);
+        }
+    }
+    
+    /**
+     * Create a single thumbnail
+     */
+    createThumbnail(pageNumber) {
+        const thumb = document.createElement('img');
+        thumb.className = 'thumbnail';
+        thumb.setAttribute('data-page', pageNumber);
+        thumb.alt = `Page ${pageNumber} thumbnail`;
+        
+        const imgPath = this.getImagePath(pageNumber);
+        thumb.setAttribute('data-src', imgPath);
+        
+        // Set first thumbnail as active
+        if (pageNumber === 1) {
+            thumb.classList.add('active');
         }
         
-        // Handle successful load
-        img.addEventListener('load', function() {
-            // Remove loading indicator if it exists
-            const indicator = img.parentNode?.querySelector('.loading-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
-        });
+        // Add click handler
+        thumb.addEventListener('click', () => this.goToPage(pageNumber));
         
-        // Handle loading errors
-        img.addEventListener('error', function() {
-            // Remove loading indicator if it exists
-            const indicator = img.parentNode?.querySelector('.loading-indicator');
-            if (indicator) {
-                indicator.remove();
+        // Setup lazy loading for thumbnails
+        this.setupLazyLoading(thumb);
+        
+        return thumb;
+    }
+    
+    /**
+     * Setup navigation buttons and events
+     */
+    setupNavigation() {
+        if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', () => this.prevPage());
+        }
+        
+        if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', () => this.nextPage());
+        }
+    }
+    
+    /**
+     * Setup keyboard event handlers
+     */
+    setupKeyboardEvents() {
+        document.addEventListener('keydown', (e) => {
+            // Prevent default for navigation keys
+            if (['ArrowLeft', 'ArrowRight', ' ', 'Escape'].includes(e.key)) {
+                e.preventDefault();
             }
             
-            // Add error class
-            img.classList.add('error');
-            
-            // Attempt to reload the image
-            if (img.getAttribute('data-retry') !== 'true') {
-                // Try once more after a delay
-                img.setAttribute('data-retry', 'true');
-                setTimeout(() => {
-                    const originalSrc = img.getAttribute('data-src') || img.src;
-                    img.src = originalSrc + '?reload=' + new Date().getTime();
-                }, 1000);
-            } else {
-                // If retry failed, use a placeholder
-                img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 1 1%22%3E%3Crect width%3D%221%22 height%3D%221%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
+            switch (e.key) {
+                case 'ArrowRight':
+                case ' ': // Spacebar
+                    this.nextPage();
+                    break;
+                case 'ArrowLeft':
+                    this.prevPage();
+                    break;
+                case 'Home':
+                    this.goToPage(1);
+                    break;
+                case 'End':
+                    this.goToPage(this.config.totalPages);
+                    break;
+                case 'Escape':
+                    this.handleEscape();
+                    break;
             }
         });
     }
     
-    // Navigation functions
-    let currentPage = 1;
+    /**
+     * Handle escape key press
+     */
+    handleEscape() {
+        // Exit fullscreen
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+        
+        // Exit zoom
+        const zoomedPage = document.querySelector('.page.zoomed');
+        if (zoomedPage) {
+            this.toggleZoom(zoomedPage);
+        }
+    }
     
-    function goToPage(pageNum) {
-        if (pageNum < 1 || pageNum > totalPages) return;
+    /**
+     * Setup window resize handler
+     */
+    setupResizeHandler() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.handleResize();
+            }, 250);
+        });
+    }
+    
+    /**
+     * Handle window resize
+     */
+    handleResize() {
+        // Force layout recalculation
+        if (this.flipbook) {
+            const display = this.flipbook.style.display;
+            this.flipbook.style.display = 'none';
+            this.flipbook.offsetHeight; // Trigger reflow
+            this.flipbook.style.display = display;
+        }
+    }
+    
+    /**
+     * Navigate to specific page
+     */
+    goToPage(pageNumber) {
+        if (pageNumber < 1 || pageNumber > this.config.totalPages || pageNumber === this.currentPage) {
+            return;
+        }
+        
+        console.log(`Navigating to page ${pageNumber}`);
         
         // Hide all pages
         document.querySelectorAll('.page').forEach(page => {
             page.style.display = 'none';
+            page.classList.remove('zoomed');
         });
         
-        // Show the target page
-        const targetPage = document.querySelector(`.page[data-page="${pageNum}"]`);
+        // Show target page
+        const targetPage = document.querySelector(`.page[data-page="${pageNumber}"]`);
         if (targetPage) {
             targetPage.style.display = 'block';
             
-            // Preload the next few pages
-            preloadPages(pageNum);
-            
-            // Update current page
-            currentPage = pageNum;
-            
-            // Update thumbnails
-            updateThumbnailHighlight(pageNum);
-        }
-    }
-    
-    function nextPage() {
-        if (currentPage < totalPages) {
-            goToPage(currentPage + 1);
-        }
-    }
-    
-    function prevPage() {
-        if (currentPage > 1) {
-            goToPage(currentPage - 1);
-        }
-    }
-    
-    // Preload nearby pages for smoother navigation
-    function preloadPages(currentPageNum) {
-        // Preload next 3 pages and previous page
-        const preloadRange = 3;
-        
-        for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + preloadRange, totalPages); i++) {
-            const img = document.querySelector(`.page[data-page="${i}"] img`);
-            if (img && img.getAttribute('data-src') && !img.src) {
-                img.src = img.getAttribute('data-src');
+            // Load the image if not already loaded
+            const img = targetPage.querySelector('img');
+            if (img && !this.loadedImages.has(pageNumber)) {
+                this.loadImage(img, this.getImagePath(pageNumber));
             }
-        }
-        
-        // Also preload previous page if not already loaded
-        if (currentPageNum > 1) {
-            const prevImg = document.querySelector(`.page[data-page="${currentPageNum - 1}"] img`);
-            if (prevImg && prevImg.getAttribute('data-src') && !prevImg.src) {
-                prevImg.src = prevImg.getAttribute('data-src');
-            }
+            
+            // Update state
+            this.currentPage = pageNumber;
+            
+            // Update UI
+            this.updatePageInfo();
+            this.updateThumbnailHighlight();
+            this.updateNavigationButtons();
+            
+            // Preload nearby pages
+            this.preloadPages(pageNumber);
         }
     }
     
-    // Update thumbnail highlight
-    function updateThumbnailHighlight(pageNum) {
+    /**
+     * Go to next page
+     */
+    nextPage() {
+        if (this.currentPage < this.config.totalPages) {
+            this.addPageTurnAnimation('next');
+            setTimeout(() => {
+                this.goToPage(this.currentPage + 1);
+            }, this.config.transitionDuration / 2);
+        }
+    }
+    
+    /**
+     * Go to previous page
+     */
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.addPageTurnAnimation('prev');
+            setTimeout(() => {
+                this.goToPage(this.currentPage - 1);
+            }, this.config.transitionDuration / 2);
+        }
+    }
+    
+    /**
+     * Add page turn animation
+     */
+    addPageTurnAnimation(direction) {
+        const currentPageElement = document.querySelector(`.page[data-page="${this.currentPage}"]`);
+        if (currentPageElement) {
+            currentPageElement.classList.add('turning');
+            setTimeout(() => {
+                currentPageElement.classList.remove('turning');
+            }, this.config.transitionDuration);
+        }
+    }
+    
+    /**
+     * Update page information display
+     */
+    updatePageInfo() {
+        if (this.currentPageSpan) {
+            this.currentPageSpan.textContent = this.currentPage;
+        }
+    }
+    
+    /**
+     * Update navigation button states
+     */
+    updateNavigationButtons() {
+        if (this.prevBtn) {
+            this.prevBtn.disabled = this.currentPage === 1;
+        }
+        
+        if (this.nextBtn) {
+            this.nextBtn.disabled = this.currentPage === this.config.totalPages;
+        }
+    }
+    
+    /**
+     * Update thumbnail highlighting
+     */
+    updateThumbnailHighlight() {
         // Remove active class from all thumbnails
         document.querySelectorAll('.thumbnail').forEach(thumb => {
             thumb.classList.remove('active');
         });
         
         // Add active class to current thumbnail
-        const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
+        const currentThumb = document.querySelector(`.thumbnail[data-page="${this.currentPage}"]`);
         if (currentThumb) {
             currentThumb.classList.add('active');
             
-            // Scroll thumbnail into view if needed
-            currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            // Scroll thumbnail into view
+            currentThumb.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
         }
     }
     
-    // Start with page 1
-    goToPage(1);
-});
-
-// Progressive image loading function (if you have high-resolution images)
-function loadProgressiveImages() {
-    const images = document.querySelectorAll('[data-high-res]');
-    
-    images.forEach(img => {
-        // Start with low-res version
-        const highResSrc = img.getAttribute('data-high-res');
+    /**
+     * Preload nearby pages for smooth navigation
+     */
+    preloadPages(currentPageNum) {
+        const range = this.config.preloadRange;
         
-        if (highResSrc) {
-            // Create a new image object to preload high-res version
-            const highResImg = new Image();
-            
-            highResImg.onload = function() {
-                // Once high-res is loaded, swap the src
-                img.src = highResSrc;
-                
-                // Add a class for any transition effects
-                img.classList.add('high-res-loaded');
-            };
-            
-            // Start loading the high-res version
-            highResImg.src = highResSrc;
+        // Preload next pages
+        for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + range, this.config.totalPages); i++) {
+            this.preloadPage(i);
         }
-    });
-}
+        
+        // Preload previous pages
+        for (let i = Math.max(currentPageNum - range, 1); i < currentPageNum; i++) {
+            this.
