@@ -4,7 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flipbook</title>
-    <style>
+    <style><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Flipbook</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="flipbook-container">
+        <div id="flipbook">
+            <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
+            <div class="loading" id="initial-loading">
+                <div class="spinner"></div>
+                <p>Loading flipbook...</p>
+            </div>
+            <!-- Pages will be dynamically added by JavaScript -->
+        </div>
+        
+        <div class="controls">
+            <button id="prev-btn" title="Previous Page (Left Arrow)">← Previous</button>
+            <div class="page-info">
+                <span id="current-page">1</span> / <span id="total-pages">94</span>
+            </div>
+            <button id="next-btn" title="Next Page (Right Arrow or Space)">Next →</button>
+        </div>
+        
+        <div class="thumbnails-container">
+            <h3>Quick Navigation</h3>
+            <div class="thumbnails" id="thumbnails">
+                <!-- Thumbnails will be dynamically added by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
         body {
             margin: 0;
             padding: 0;
