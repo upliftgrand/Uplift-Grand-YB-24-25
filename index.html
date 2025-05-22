@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Flipbook</title>
+    <title>Digital Flipbook - Dual Page</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #2a2a2a;
             overflow-x: hidden;
         }
         .flipbook-container {
@@ -19,46 +19,79 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #333;
-            padding: 10px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            padding: 20px;
             box-sizing: border-box;
         }
         #flipbook {
-            width: min(90vw, 800px);
-            max-width: 100%;
-            aspect-ratio: 4/3;
+            width: min(95vw, 1200px);
+            height: min(80vh, 800px);
             position: relative;
-            perspective: 1500px;
-            background-color: #222;
-            border-radius: 8px;
+            perspective: 2000px;
+            background-color: #1a1a1a;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: flex;
+            border: 2px solid #333;
         }
+        
+        .book-spine {
+            width: 4px;
+            background: linear-gradient(to bottom, #444, #222, #444);
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-container {
+            width: 50%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-container.left {
+            border-right: 1px solid #333;
+        }
+        
+        .page-container.right {
+            border-left: 1px solid #333;
+        }
+        
         .page {
             position: absolute;
             width: 100%;
             height: 100%;
-            background-color: #fff;
-            transition: transform 0.5s ease;
-            transform-style: preserve-3d;
-            transform-origin: left center;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            overflow: hidden;
+            background-color: #fefefe;
             display: flex;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
         }
+        
+        .page.active {
+            opacity: 1;
+        }
+        
         .page img {
-            width: 100%;
-            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
             object-fit: contain;
             -webkit-user-select: none;
             user-select: none;
             display: block;
-            max-width: 100%;
-            max-height: 100%;
+            border-radius: 4px;
         }
+        
         .page img.error {
             background-color: #f8f8f8;
             display: flex;
@@ -66,97 +99,139 @@
             align-items: center;
             font-style: italic;
             color: #999;
+            min-width: 200px;
+            min-height: 200px;
+        }
+        
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .page-container.left .page-number {
+            left: 15px;
+        }
+        
+        .page-container.right .page-number {
+            right: 15px;
         }
         
         .controls {
             display: flex;
             justify-content: center;
-            padding: 15px;
-            gap: 15px;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
             flex-wrap: wrap;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
         }
+        
         .controls button {
             padding: 12px 24px;
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            min-width: 100px;
+            min-width: 120px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
+        
         .controls button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0056b3, #004085);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
         }
+        
         .controls button:disabled {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
+        
         .page-info {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin: 0 10px;
-            white-space: nowrap;
-        }
-        .page-number {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
             font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
         .thumbnails {
             display: flex;
             overflow-x: auto;
             padding: 15px;
-            background-color: #222;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
             gap: 8px;
             max-width: 100%;
-            border-radius: 8px;
-            margin-top: 10px;
+            border-radius: 12px;
+            margin-top: 15px;
             scrollbar-width: thin;
             scrollbar-color: #007bff #333;
         }
+        
         .thumbnails::-webkit-scrollbar {
             height: 8px;
         }
+        
         .thumbnails::-webkit-scrollbar-track {
-            background: #333;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
+        
         .thumbnails::-webkit-scrollbar-thumb {
-            background: #007bff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             border-radius: 4px;
         }
-        .thumbnail {
-            width: 60px;
-            height: 80px;
+        
+        .thumbnail-pair {
+            display: flex;
+            gap: 2px;
             cursor: pointer;
             border: 2px solid transparent;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            object-fit: cover;
-            background-color: #fff;
-            border-radius: 4px;
             flex-shrink: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 4px;
         }
-        .thumbnail:hover {
+        
+        .thumbnail-pair:hover {
             border-color: #007bff;
             transform: scale(1.05);
+            background-color: rgba(0, 123, 255, 0.2);
         }
-        .thumbnail.active {
-            border-color: #ff0000;
+        
+        .thumbnail-pair.active {
+            border-color: #ff6b6b;
             transform: scale(1.1);
+            background-color: rgba(255, 107, 107, 0.2);
         }
+        
+        .thumbnail {
+            width: 30px;
+            height: 40px;
+            object-fit: cover;
+            background-color: #fff;
+            border-radius: 3px;
+        }
+        
         .loading {
             position: absolute;
             top: 50%;
@@ -165,7 +240,9 @@
             color: white;
             font-size: 24px;
             z-index: 100;
+            text-align: center;
         }
+        
         .loading-indicator {
             position: absolute;
             top: 50%;
@@ -179,44 +256,85 @@
             font-size: 14px;
         }
         
+        .fullscreen-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 20;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .click-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            z-index: 5;
+            cursor: pointer;
+        }
+        
+        .click-zone.left {
+            left: 0;
+        }
+        
+        .click-zone.right {
+            right: 0;
+        }
+        
+        .click-zone:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
         @media (max-width: 768px) {
             .flipbook-container {
-                padding: 5px;
+                padding: 10px;
             }
             
             #flipbook {
                 width: 95vw;
-                aspect-ratio: 3/4;
+                height: 60vh;
+                min-height: 400px;
             }
             
             .controls {
-                padding: 10px;
-                gap: 10px;
+                padding: 15px;
+                gap: 15px;
             }
             
             .controls button {
                 padding: 10px 20px;
                 font-size: 14px;
-                min-width: 80px;
+                min-width: 100px;
             }
             
             .thumbnail {
-                width: 40px;
-                height: 55px;
+                width: 25px;
+                height: 35px;
             }
             
             .page-number {
                 bottom: 10px;
-                right: 10px;
-                padding: 4px 8px;
-                font-size: 11px;
+                padding: 3px 6px;
+                font-size: 10px;
             }
         }
         
         @media (max-width: 480px) {
             #flipbook {
-                width: 98vw;
-                aspect-ratio: 2/3;
+                height: 50vh;
+                min-height: 350px;
             }
             
             .controls {
@@ -230,8 +348,8 @@
             }
             
             .thumbnail {
-                width: 35px;
-                height: 50px;
+                width: 20px;
+                height: 30px;
             }
             
             .thumbnails {
@@ -239,47 +357,14 @@
             }
         }
         
-        @media (min-width: 1200px) {
-            #flipbook {
-                width: min(80vw, 1000px);
-                aspect-ratio: 16/10;
-            }
+        .turn-animation {
+            animation: pageFlip 0.6s ease-in-out;
         }
         
-        .page.turning {
-            animation: turnPage 0.5s ease forwards;
-        }
-        @keyframes turnPage {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(-180deg); }
-        }
-        
-        .page.zoomed {
-            cursor: zoom-out;
-        }
-        .page.zoomed img {
-            object-fit: cover;
-            cursor: grab;
-        }
-        .page.zoomed img:active {
-            cursor: grabbing;
-        }
-        
-        .fullscreen-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            z-index: 20;
-            font-size: 14px;
-        }
-        .fullscreen-btn:hover {
-            background-color: rgba(0, 0, 0, 0.9);
+        @keyframes pageFlip {
+            0% { transform: rotateY(0deg); opacity: 1; }
+            50% { transform: rotateY(-90deg); opacity: 0.3; }
+            100% { transform: rotateY(0deg); opacity: 1; }
         }
     </style>
 </head>
@@ -287,27 +372,43 @@
     <div class="flipbook-container">
         <div id="flipbook">
             <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+            
+            <div class="page-container left">
+                <!-- Left pages will be inserted here -->
+            </div>
+            
+            <div class="book-spine"></div>
+            
+            <div class="page-container right">
+                <!-- Right pages will be inserted here -->
+            </div>
+            
+            <div class="click-zone left" onclick="prevPage()"></div>
+            <div class="click-zone right" onclick="nextPage()"></div>
         </div>
         
         <div class="controls">
-            <button id="prev-btn">← Previous</button>
+            <button id="prev-btn" onclick="prevPage()">← Previous</button>
             <div class="page-info">
-                <span id="current-page">1</span> / <span id="total-pages">94</span>
+                <span id="current-pages">1-2</span> / <span id="total-pages">94</span>
             </div>
-            <button id="next-btn">Next →</button>
+            <button id="next-btn" onclick="nextPage()">Next →</button>
         </div>
         
-        <div class="thumbnails">
+        <div class="thumbnails" id="thumbnails">
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Variables and configuration - CORRECTED IMAGE PATH
+            // Configuration
             const totalPages = 94;
-            const imageBasePath = './images/'; // FIXED: Added images/ folder path
+            const imageBasePath = './images/';
             const imagePrefix = 'page';
             const imageExtension = '.jpg';
+            
+            let currentSpread = 1; // Each spread shows 2 pages
+            const totalSpreads = Math.ceil(totalPages / 2);
             
             // Update total pages display
             document.getElementById('total-pages').textContent = totalPages;
@@ -324,7 +425,7 @@
                 
                 const loadingMessage = document.createElement('div');
                 loadingMessage.className = 'loading';
-                loadingMessage.textContent = 'Loading flipbook...';
+                loadingMessage.innerHTML = 'Loading flipbook...<br><small>Preparing dual-page view</small>';
                 flipbook.appendChild(loadingMessage);
                 
                 createPages();
@@ -334,100 +435,104 @@
                 setTimeout(() => {
                     const loading = document.querySelector('.loading');
                     if (loading) loading.remove();
-                }, 1500);
+                    showSpread(1);
+                }, 1000);
             }
             
             function createPages() {
-                const flipbook = document.getElementById('flipbook');
+                const leftContainer = document.querySelector('.page-container.left');
+                const rightContainer = document.querySelector('.page-container.right');
                 
-                for (let i = 1; i <= totalPages; i++) {
-                    const page = document.createElement('div');
-                    page.className = 'page';
-                    page.setAttribute('data-page', i);
+                // Create pages for each spread
+                for (let spread = 1; spread <= totalSpreads; spread++) {
+                    const leftPageNum = (spread - 1) * 2 + 1;
+                    const rightPageNum = leftPageNum + 1;
                     
-                    if (i > 1) {
-                        page.style.display = 'none';
+                    // Create left page
+                    if (leftPageNum <= totalPages) {
+                        const leftPage = createPageElement(leftPageNum, 'left');
+                        leftContainer.appendChild(leftPage);
                     }
                     
-                    const img = document.createElement('img');
-                    const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
-                    img.setAttribute('data-src', imgPath);
-                    img.alt = `Page ${i}`;
-                    
-                    if (i <= 3) {
-                        img.src = imgPath;
+                    // Create right page
+                    if (rightPageNum <= totalPages) {
+                        const rightPage = createPageElement(rightPageNum, 'right');
+                        rightContainer.appendChild(rightPage);
                     }
-                    
-                    const pageNumber = document.createElement('div');
-                    pageNumber.className = 'page-number';
-                    pageNumber.textContent = i;
-                    
-                    page.appendChild(img);
-                    page.appendChild(pageNumber);
-                    flipbook.appendChild(page);
-                    
-                    page.addEventListener('click', function(e) {
-                        if (e.detail === 2) {
-                            toggleZoom(page);
-                            return;
-                        }
-                        
-                        setTimeout(() => {
-                            if (e.detail === 1) {
-                                const clickX = e.clientX - page.getBoundingClientRect().left;
-                                const pageWidth = page.offsetWidth;
-                                
-                                if (clickX > pageWidth / 2) {
-                                    nextPage();
-                                } else {
-                                    prevPage();
-                                }
-                            }
-                        }, 200);
-                    });
-                    
-                    setupImageLoading(img);
                 }
             }
             
+            function createPageElement(pageNum, side) {
+                const page = document.createElement('div');
+                page.className = 'page';
+                page.setAttribute('data-page', pageNum);
+                page.setAttribute('data-spread', Math.ceil(pageNum / 2));
+                
+                const img = document.createElement('img');
+                const imgPath = `${imageBasePath}${imagePrefix}${pageNum}${imageExtension}`;
+                img.setAttribute('data-src', imgPath);
+                img.alt = `Page ${pageNum}`;
+                
+                // Preload first few pages
+                if (pageNum <= 6) {
+                    img.src = imgPath;
+                }
+                
+                const pageNumber = document.createElement('div');
+                pageNumber.className = 'page-number';
+                pageNumber.textContent = pageNum;
+                
+                page.appendChild(img);
+                page.appendChild(pageNumber);
+                
+                setupImageLoading(img);
+                
+                return page;
+            }
+            
             function createThumbnails() {
-                const thumbnailsContainer = document.querySelector('.thumbnails');
+                const thumbnailsContainer = document.getElementById('thumbnails');
                 if (!thumbnailsContainer) return;
                 
                 thumbnailsContainer.innerHTML = '';
                 
-                for (let i = 1; i <= totalPages; i++) {
-                    const thumb = document.createElement('img');
-                    thumb.className = 'thumbnail';
-                    thumb.src = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
-                    thumb.setAttribute('data-page', i);
-                    thumb.alt = `Page ${i} thumbnail`;
+                for (let spread = 1; spread <= totalSpreads; spread++) {
+                    const leftPageNum = (spread - 1) * 2 + 1;
+                    const rightPageNum = leftPageNum + 1;
                     
-                    if (i === 1) {
-                        thumb.classList.add('active');
+                    const thumbPair = document.createElement('div');
+                    thumbPair.className = 'thumbnail-pair';
+                    thumbPair.setAttribute('data-spread', spread);
+                    
+                    // Left thumbnail
+                    if (leftPageNum <= totalPages) {
+                        const leftThumb = document.createElement('img');
+                        leftThumb.className = 'thumbnail';
+                        leftThumb.src = `${imageBasePath}${imagePrefix}${leftPageNum}${imageExtension}`;
+                        leftThumb.alt = `Page ${leftPageNum}`;
+                        thumbPair.appendChild(leftThumb);
+                        setupImageLoading(leftThumb);
                     }
                     
-                    thumb.addEventListener('click', function() {
-                        goToPage(i);
+                    // Right thumbnail
+                    if (rightPageNum <= totalPages) {
+                        const rightThumb = document.createElement('img');
+                        rightThumb.className = 'thumbnail';
+                        rightThumb.src = `${imageBasePath}${imagePrefix}${rightPageNum}${imageExtension}`;
+                        rightThumb.alt = `Page ${rightPageNum}`;
+                        thumbPair.appendChild(rightThumb);
+                        setupImageLoading(rightThumb);
+                    }
+                    
+                    thumbPair.addEventListener('click', function() {
+                        goToSpread(spread);
                     });
                     
-                    thumbnailsContainer.appendChild(thumb);
-                    setupImageLoading(thumb);
+                    thumbnailsContainer.appendChild(thumbPair);
                 }
             }
             
             function setupNavigation() {
-                const prevButton = document.querySelector('#prev-btn');
-                const nextButton = document.querySelector('#next-btn');
-                
-                if (prevButton) {
-                    prevButton.addEventListener('click', prevPage);
-                }
-                
-                if (nextButton) {
-                    nextButton.addEventListener('click', nextPage);
-                }
-                
                 document.addEventListener('keydown', function(e) {
                     if (e.key === 'ArrowRight' || e.key === ' ') {
                         e.preventDefault();
@@ -438,10 +543,6 @@
                     } else if (e.key === 'Escape') {
                         if (document.fullscreenElement) {
                             document.exitFullscreen();
-                        }
-                        const zoomedPage = document.querySelector('.page.zoomed');
-                        if (zoomedPage) {
-                            toggleZoom(zoomedPage);
                         }
                     }
                 });
@@ -461,26 +562,7 @@
                     observer.observe(img);
                 }
                 
-                const loadingIndicator = document.createElement('div');
-                loadingIndicator.className = 'loading-indicator';
-                loadingIndicator.textContent = 'Loading...';
-                if (img.parentNode) {
-                    img.parentNode.appendChild(loadingIndicator);
-                }
-                
-                img.addEventListener('load', function() {
-                    const indicator = img.parentNode?.querySelector('.loading-indicator');
-                    if (indicator) {
-                        indicator.remove();
-                    }
-                });
-                
                 img.addEventListener('error', function() {
-                    const indicator = img.parentNode?.querySelector('.loading-indicator');
-                    if (indicator) {
-                        indicator.remove();
-                    }
-                    
                     img.classList.add('error');
                     
                     if (img.getAttribute('data-retry') !== 'true') {
@@ -490,48 +572,106 @@
                             img.src = originalSrc + '?reload=' + new Date().getTime();
                         }, 1000);
                     } else {
-                        img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 300 400%22%3E%3Crect width%3D%22300%22 height%3D%22400%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%22150%22 y%3D%22200%22 font-size%3D%2216%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
+                        img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22200%22 height%3D%22250%22 viewBox%3D%220 0 200 250%22%3E%3Crect width%3D%22200%22 height%3D%22250%22 fill%3D%22%23f8f8f8%22 stroke%3D%22%23ddd%22%2F%3E%3Ctext x%3D%22100%22 y%3D%22125%22 font-size%3D%2214%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
                     }
                 });
             }
             
-            let currentPage = 1;
-            
-            function goToPage(pageNum) {
-                if (pageNum < 1 || pageNum > totalPages) return;
+            function showSpread(spreadNum) {
+                if (spreadNum < 1 || spreadNum > totalSpreads) return;
                 
+                // Hide all pages
                 document.querySelectorAll('.page').forEach(page => {
-                    page.style.display = 'none';
-                    page.classList.remove('zoomed');
+                    page.classList.remove('active');
                 });
                 
-                const targetPage = document.querySelector(`.page[data-page="${pageNum}"]`);
-                if (targetPage) {
-                    targetPage.style.display = 'block';
-                    preloadPages(pageNum);
-                    currentPage = pageNum;
-                    updatePageInfo();
-                    updateThumbnailHighlight(pageNum);
-                    updateNavigationButtons();
+                // Show pages for current spread
+                const leftPageNum = (spreadNum - 1) * 2 + 1;
+                const rightPageNum = leftPageNum + 1;
+                
+                const leftPage = document.querySelector(`.page[data-page="${leftPageNum}"]`);
+                const rightPage = document.querySelector(`.page[data-page="${rightPageNum}"]`);
+                
+                if (leftPage) {
+                    leftPage.classList.add('active');
+                    preloadImage(leftPage.querySelector('img'));
                 }
+                
+                if (rightPage) {
+                    rightPage.classList.add('active');
+                    preloadImage(rightPage.querySelector('img'));
+                }
+                
+                // Preload adjacent pages
+                preloadAdjacentPages(spreadNum);
+                
+                currentSpread = spreadNum;
+                updatePageInfo();
+                updateThumbnailHighlight();
+                updateNavigationButtons();
+            }
+            
+            function preloadImage(img) {
+                if (img && img.getAttribute('data-src') && !img.src) {
+                    img.src = img.getAttribute('data-src');
+                }
+            }
+            
+            function preloadAdjacentPages(spreadNum) {
+                const preloadRange = 2;
+                
+                for (let i = Math.max(1, spreadNum - preloadRange); i <= Math.min(totalSpreads, spreadNum + preloadRange); i++) {
+                    const leftPageNum = (i - 1) * 2 + 1;
+                    const rightPageNum = leftPageNum + 1;
+                    
+                    [leftPageNum, rightPageNum].forEach(pageNum => {
+                        if (pageNum <= totalPages) {
+                            const img = document.querySelector(`.page[data-page="${pageNum}"] img`);
+                            preloadImage(img);
+                        }
+                    });
+                }
+            }
+            
+            function goToSpread(spreadNum) {
+                if (spreadNum === currentSpread) return;
+                
+                const flipbook = document.getElementById('flipbook');
+                flipbook.classList.add('turn-animation');
+                
+                setTimeout(() => {
+                    showSpread(spreadNum);
+                    flipbook.classList.remove('turn-animation');
+                }, 300);
             }
             
             function nextPage() {
-                if (currentPage < totalPages) {
-                    goToPage(currentPage + 1);
+                if (currentSpread < totalSpreads) {
+                    goToSpread(currentSpread + 1);
                 }
             }
+            
+            window.nextPage = nextPage;
             
             function prevPage() {
-                if (currentPage > 1) {
-                    goToPage(currentPage - 1);
+                if (currentSpread > 1) {
+                    goToSpread(currentSpread - 1);
                 }
             }
             
+            window.prevPage = prevPage;
+            
             function updatePageInfo() {
-                const currentPageSpan = document.getElementById('current-page');
-                if (currentPageSpan) {
-                    currentPageSpan.textContent = currentPage;
+                const leftPageNum = (currentSpread - 1) * 2 + 1;
+                const rightPageNum = Math.min(leftPageNum + 1, totalPages);
+                
+                const currentPagesSpan = document.getElementById('current-pages');
+                if (currentPagesSpan) {
+                    if (rightPageNum > totalPages || leftPageNum === rightPageNum) {
+                        currentPagesSpan.textContent = leftPageNum;
+                    } else {
+                        currentPagesSpan.textContent = `${leftPageNum}-${rightPageNum}`;
+                    }
                 }
             }
             
@@ -540,49 +680,25 @@
                 const nextBtn = document.getElementById('next-btn');
                 
                 if (prevBtn) {
-                    prevBtn.disabled = currentPage === 1;
+                    prevBtn.disabled = currentSpread === 1;
                 }
                 
                 if (nextBtn) {
-                    nextBtn.disabled = currentPage === totalPages;
+                    nextBtn.disabled = currentSpread === totalSpreads;
                 }
             }
             
-            function preloadPages(currentPageNum) {
-                const preloadRange = 3;
-                
-                for (let i = currentPageNum + 1; i <= Math.min(currentPageNum + preloadRange, totalPages); i++) {
-                    const img = document.querySelector(`.page[data-page="${i}"] img`);
-                    if (img && img.getAttribute('data-src') && !img.src) {
-                        img.src = img.getAttribute('data-src');
-                    }
-                }
-                
-                if (currentPageNum > 1) {
-                    const prevImg = document.querySelector(`.page[data-page="${currentPageNum - 1}"] img`);
-                    if (prevImg && prevImg.getAttribute('data-src') && !prevImg.src) {
-                        prevImg.src = prevImg.getAttribute('data-src');
-                    }
-                }
-            }
-            
-            function updateThumbnailHighlight(pageNum) {
-                document.querySelectorAll('.thumbnail').forEach(thumb => {
+            function updateThumbnailHighlight() {
+                document.querySelectorAll('.thumbnail-pair').forEach(thumb => {
                     thumb.classList.remove('active');
                 });
                 
-                const currentThumb = document.querySelector(`.thumbnail[data-page="${pageNum}"]`);
+                const currentThumb = document.querySelector(`.thumbnail-pair[data-spread="${currentSpread}"]`);
                 if (currentThumb) {
                     currentThumb.classList.add('active');
                     currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
             }
-            
-            function toggleZoom(page) {
-                page.classList.toggle('zoomed');
-            }
-            
-            goToPage(1);
         });
         
         function toggleFullscreen() {
@@ -601,7 +717,7 @@
             if (flipbook) {
                 flipbook.style.display = 'none';
                 flipbook.offsetHeight;
-                flipbook.style.display = 'relative';
+                flipbook.style.display = 'flex';
             }
         });
     </script>
