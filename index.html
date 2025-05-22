@@ -10,26 +10,33 @@
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         .flipbook-container {
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: #333;
+            padding: 10px;
+            box-sizing: border-box;
         }
         #flipbook {
-            width: 90%;
-            height: 80vh;
+            width: min(90vw, 800px);
+            max-width: 100%;
+            aspect-ratio: 4/3;
             position: relative;
             perspective: 1500px;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         .page {
             position: absolute;
-            width: 50%;
+            width: 100%;
             height: 100%;
             background-color: #fff;
             transition: transform 0.5s ease;
@@ -37,16 +44,20 @@
             transform-origin: left center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            overflow: hidden; /* Prevent image overflow */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .page img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             -webkit-user-select: none;
             user-select: none;
-            display: block; /* Fix potential inline display issues */
-            max-width: 100%; /* Ensure image doesn't exceed container */
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
         }
         /* Add error handling for images */
         .page img.error {
@@ -61,53 +72,91 @@
         .controls {
             display: flex;
             justify-content: center;
-            padding: 20px;
-            gap: 20px;
+            padding: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         .controls button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            min-width: 100px;
+            transition: all 0.3s ease;
         }
         .controls button:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .controls button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .page-info {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 0 10px;
+            white-space: nowrap;
         }
         .page-number {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
         }
         .thumbnails {
             display: flex;
             overflow-x: auto;
-            padding: 10px;
+            padding: 15px;
             background-color: #222;
-            gap: 10px;
+            gap: 8px;
             max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #007bff #333;
+        }
+        .thumbnails::-webkit-scrollbar {
+            height: 8px;
+        }
+        .thumbnails::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 4px;
+        }
+        .thumbnails::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 4px;
         }
         .thumbnail {
             width: 60px;
             height: 80px;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             object-fit: cover;
-            background-color: #fff; /* Add background in case image fails to load */
+            background-color: #fff;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
         .thumbnail:hover {
             border-color: #007bff;
+            transform: scale(1.05);
         }
         .thumbnail.active {
             border-color: #ff0000;
+            transform: scale(1.1);
         }
         .loading {
             position: absolute;
@@ -116,36 +165,89 @@
             transform: translate(-50%, -50%);
             color: white;
             font-size: 24px;
-            z-index: 100; /* Ensure loading appears above other elements */
+            z-index: 100;
         }
         .loading-indicator {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 15px 25px;
+            border-radius: 8px;
             z-index: 10;
+            font-size: 14px;
         }
-        /* Responsive adjustments */
+        
+        /* Responsive adjustments for better size handling */
         @media (max-width: 768px) {
+            .flipbook-container {
+                padding: 5px;
+            }
+            
             #flipbook {
-                width: 95%;
-                height: 70vh;
+                width: 95vw;
+                aspect-ratio: 3/4;
+            }
+            
+            .controls {
+                padding: 10px;
+                gap: 10px;
             }
             
             .controls button {
-                padding: 8px 16px;
+                padding: 10px 20px;
                 font-size: 14px;
+                min-width: 80px;
             }
             
             .thumbnail {
                 width: 40px;
-                height: 60px;
+                height: 55px;
+            }
+            
+            .page-number {
+                bottom: 10px;
+                right: 10px;
+                padding: 4px 8px;
+                font-size: 11px;
             }
         }
+        
+        @media (max-width: 480px) {
+            #flipbook {
+                width: 98vw;
+                aspect-ratio: 2/3;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls button {
+                width: 200px;
+                max-width: 90vw;
+            }
+            
+            .thumbnail {
+                width: 35px;
+                height: 50px;
+            }
+            
+            .thumbnails {
+                padding: 10px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            #flipbook {
+                width: min(80vw, 1000px);
+                aspect-ratio: 16/10;
+            }
+        }
+        
         /* Animation for page turn effect */
         .page.turning {
             animation: turnPage 0.5s ease forwards;
@@ -154,17 +256,51 @@
             0% { transform: rotateY(0deg); }
             100% { transform: rotateY(-180deg); }
         }
+        
+        /* Zoom functionality */
+        .page.zoomed {
+            cursor: zoom-out;
+        }
+        .page.zoomed img {
+            object-fit: cover;
+            cursor: grab;
+        }
+        .page.zoomed img:active {
+            cursor: grabbing;
+        }
+        
+        /* Fullscreen support */
+        .fullscreen-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 20;
+            font-size: 14px;
+        }
+        .fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
     </style>
 </head>
 <body>
     <div class="flipbook-container">
         <div id="flipbook">
+            <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
             <!-- Pages will be dynamically added by JavaScript -->
         </div>
         
         <div class="controls">
-            <button id="prev-btn">Previous</button>
-            <button id="next-btn">Next</button>
+            <button id="prev-btn">← Previous</button>
+            <div class="page-info">
+                <span id="current-page">1</span> / <span id="total-pages">94</span>
+            </div>
+            <button id="next-btn">Next →</button>
         </div>
         
         <div class="thumbnails">
@@ -181,6 +317,9 @@
             const imagePrefix = 'page';
             const imageExtension = '.jpg';
             
+            // Update total pages display
+            document.getElementById('total-pages').textContent = totalPages;
+            
             // Initialize the flipbook
             initFlipbook();
             
@@ -191,9 +330,6 @@
                     console.error('Flipbook container not found!');
                     return;
                 }
-                
-                // Clear existing content
-                flipbook.innerHTML = '';
                 
                 // Create loading message
                 const loadingMessage = document.createElement('div');
@@ -234,6 +370,7 @@
                     const img = document.createElement('img');
                     const imgPath = `${imageBasePath}${imagePrefix}${i}${imageExtension}`;
                     img.setAttribute('data-src', imgPath); // Use data-src for lazy loading
+                    img.alt = `Page ${i}`;
                     
                     // For the first few pages, load immediately
                     if (i <= 3) {
@@ -250,17 +387,27 @@
                     page.appendChild(pageNumber);
                     flipbook.appendChild(page);
                     
-                    // Add click event for navigation
+                    // Add click event for navigation and zoom
                     page.addEventListener('click', function(e) {
-                        // If click is on the right side, go to next page
-                        const clickX = e.clientX - page.getBoundingClientRect().left;
-                        const pageWidth = page.offsetWidth;
-                        
-                        if (clickX > pageWidth / 2) {
-                            nextPage();
-                        } else {
-                            prevPage();
+                        // Check if double-click for zoom
+                        if (e.detail === 2) {
+                            toggleZoom(page);
+                            return;
                         }
+                        
+                        // Single click navigation
+                        setTimeout(() => {
+                            if (e.detail === 1) {
+                                const clickX = e.clientX - page.getBoundingClientRect().left;
+                                const pageWidth = page.offsetWidth;
+                                
+                                if (clickX > pageWidth / 2) {
+                                    nextPage();
+                                } else {
+                                    prevPage();
+                                }
+                            }
+                        }, 200);
                     });
                     
                     // Add image loading handlers
@@ -314,10 +461,21 @@
                 
                 // Add keyboard navigation
                 document.addEventListener('keydown', function(e) {
-                    if (e.key === 'ArrowRight') {
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
                         nextPage();
                     } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
                         prevPage();
+                    } else if (e.key === 'Escape') {
+                        // Exit fullscreen or zoom
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                        }
+                        const zoomedPage = document.querySelector('.page.zoomed');
+                        if (zoomedPage) {
+                            toggleZoom(zoomedPage);
+                        }
                     }
                 });
             }
@@ -377,7 +535,7 @@
                         }, 1000);
                     } else {
                         // If retry failed, use a placeholder
-                        img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 1 1%22%3E%3Crect width%3D%221%22 height%3D%221%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%2250%25%22 y%3D%2250%25%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
+                        img.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22100%25%22 height%3D%22100%25%22 viewBox%3D%220 0 300 400%22%3E%3Crect width%3D%22300%22 height%3D%22400%22 fill%3D%22%23f8f8f8%22%2F%3E%3Ctext x%3D%22150%22 y%3D%22200%22 font-size%3D%2216%22 text-anchor%3D%22middle%22 alignment-baseline%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 fill%3D%22%23999%22%3EImage not available%3C%2Ftext%3E%3C%2Fsvg%3E';
                     }
                 });
             }
@@ -391,6 +549,7 @@
                 // Hide all pages
                 document.querySelectorAll('.page').forEach(page => {
                     page.style.display = 'none';
+                    page.classList.remove('zoomed');
                 });
                 
                 // Show the target page
@@ -404,8 +563,10 @@
                     // Update current page
                     currentPage = pageNum;
                     
-                    // Update thumbnails
+                    // Update UI
+                    updatePageInfo();
                     updateThumbnailHighlight(pageNum);
+                    updateNavigationButtons();
                 }
             }
             
@@ -418,6 +579,28 @@
             function prevPage() {
                 if (currentPage > 1) {
                     goToPage(currentPage - 1);
+                }
+            }
+            
+            // Update page info display
+            function updatePageInfo() {
+                const currentPageSpan = document.getElementById('current-page');
+                if (currentPageSpan) {
+                    currentPageSpan.textContent = currentPage;
+                }
+            }
+            
+            // Update navigation button states
+            function updateNavigationButtons() {
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+                
+                if (prevBtn) {
+                    prevBtn.disabled = currentPage === 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = currentPage === totalPages;
                 }
             }
             
@@ -459,8 +642,37 @@
                 }
             }
             
+            // Zoom functionality
+            function toggleZoom(page) {
+                page.classList.toggle('zoomed');
+            }
+            
             // Start with page 1
             goToPage(1);
+        });
+        
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            const flipbook = document.getElementById('flipbook');
+            if (!document.fullscreenElement) {
+                flipbook.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Handle window resize for responsive adjustments
+        window.addEventListener('resize', function() {
+            // Trigger a re-layout if needed
+            const flipbook = document.getElementById('flipbook');
+            if (flipbook) {
+                // Force a repaint to handle aspect ratio changes
+                flipbook.style.display = 'none';
+                flipbook.offsetHeight; // Trigger reflow
+                flipbook.style.display = 'relative';
+            }
         });
     </script>
 </body>
