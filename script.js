@@ -1,6 +1,6 @@
 /**
  * Digital Flipbook Application
- * Handles loading and navigation of page1.jpg through page95.jpg
+ * Handles loading and navigation of page0.jpg through page95.jpg
  */
 
 class DigitalFlipbook {
